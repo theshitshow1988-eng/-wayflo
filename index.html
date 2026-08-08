@@ -2,880 +2,834 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+
 <meta name="viewport"
-      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+      content="width=device-width,
+               initial-scale=1,
+               maximum-scale=1,
+               user-scalable=no,
+               viewport-fit=cover">
 
 <title>WAYFLO Driving Simulator</title>
 
 <style>
-/* =========================================================
-   WAYFLO COCKPIT — CLEAN RESPONSIVE LAYOUT
-   ========================================================= */
-
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
 }
 
 html,
-body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-  background: #071018;
-  font-family: Arial, Helvetica, sans-serif;
-  color: #fff;
+body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#05090b;
+  font-family:Arial,Helvetica,sans-serif;
+  color:#fff;
 }
 
-body {
-  touch-action: manipulation;
+button{
+  font:inherit;
+  color:inherit;
+  border:0;
+  outline:0;
+  touch-action:none;
 }
 
-/* ---------------------------------------------------------
-   GENERAL CONTROL STYLE
-   --------------------------------------------------------- */
-
-button,
-.control,
-.panel,
-.card {
-  font-family: inherit;
+#game{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  background:#071016;
 }
 
-button {
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-}
+/* =========================================================
+   OUTSIDE WORLD
+========================================================= */
 
-.control {
-  background: rgba(7, 17, 25, 0.78);
-  border: 2px solid rgba(255,255,255,0.13);
-  border-radius: 18px;
-  color: #fff;
-  box-shadow:
-    0 8px 22px rgba(0,0,0,0.25),
-    inset 0 1px 0 rgba(255,255,255,0.05);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.control.active {
-  background: rgba(67, 145, 177, 0.75);
-  border-color: #75d7ff;
-}
-
-/* ---------------------------------------------------------
-   TOP INFORMATION
-   --------------------------------------------------------- */
-
-#vehicleInfo,
-.vehicle-info,
-#vehiclePanel,
-.vehicle-panel {
-  position: fixed !important;
-  top: 20px !important;
-  left: 20px !important;
-  width: 285px !important;
-  min-height: 112px;
-  padding: 20px 22px !important;
-  z-index: 1000 !important;
-
-  background: rgba(17, 39, 53, 0.88);
-  border: 2px solid rgba(255,255,255,0.12);
-  border-radius: 20px;
-
-  box-shadow: 0 10px 28px rgba(0,0,0,0.22);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-#vehicleInfo h1,
-.vehicle-info h1,
-#vehiclePanel h1,
-.vehicle-panel h1 {
-  margin: 0 0 12px;
-  font-size: 25px;
-  line-height: 1.15;
-  letter-spacing: 2px;
-}
-
-#vehicleInfo p,
-.vehicle-info p,
-#vehiclePanel p,
-.vehicle-panel p {
-  margin: 0;
-  font-size: 16px;
-}
-
-/* ---------------------------------------------------------
-   MIRROR
-   --------------------------------------------------------- */
-
-#mirror,
-.mirror,
-.mirror-container {
-  position: fixed !important;
-
-  top: 24px !important;
-  left: 50% !important;
-
-  width: min(460px, 46vw) !important;
-  height: 125px !important;
-
-  transform: translateX(-50%) !important;
-
-  z-index: 900 !important;
-}
-
-/*
-   Mirror must NEVER be hidden behind the vehicle card.
-   The center position leaves the left and right controls
-   independent from the mirror.
-*/
-
-#mirror img,
-.mirror img,
-.mirror-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 25px;
-}
-
-/* ---------------------------------------------------------
-   TOP RIGHT BUTTONS
-   --------------------------------------------------------- */
-
-#mirrorButton,
-.mirror-button,
-#settingsButton,
-.settings-button {
-  position: fixed !important;
-  top: 20px !important;
-  z-index: 1100 !important;
-
-  width: 100px !important;
-  height: 92px !important;
-
-  display: flex !important;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  border-radius: 20px;
-}
-
-#mirrorButton,
-.mirror-button {
-  right: 130px !important;
-}
-
-#settingsButton,
-.settings-button {
-  right: 20px !important;
-}
-
-#mirrorButton span,
-.mirror-button span,
-#settingsButton span,
-.settings-button span {
-  font-size: 13px;
-  margin-top: 7px;
-  letter-spacing: 1.5px;
-}
-
-/* ---------------------------------------------------------
-   EXIT
-   --------------------------------------------------------- */
-
-#exitButton,
-.exit-button,
-.exit {
-  position: fixed !important;
-
-  top: 150px !important;
-  left: 20px !important;
-
-  width: 105px !important;
-  height: 92px !important;
-
-  z-index: 1100 !important;
-
-  display: flex !important;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 20px;
-}
-
-/* ---------------------------------------------------------
-   DRIVING SCENE
-   --------------------------------------------------------- */
-
-#road,
-.road,
-#scene,
-.scene,
-#game,
-.game {
-  position: fixed !important;
-  left: 0 !important;
-  right: 0 !important;
-
-  top: 0 !important;
-  bottom: 42% !important;
-
-  z-index: 1 !important;
-
-  overflow: hidden;
-}
-
-/* Keep the road visually behind the cockpit */
-
-canvas {
-  max-width: 100%;
-}
-
-/* ---------------------------------------------------------
-   DASHBOARD
-   --------------------------------------------------------- */
-
-#dashboard,
-.dashboard,
-#cockpit,
-.cockpit {
-  position: fixed !important;
-
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-
-  height: 42% !important;
-
-  z-index: 500 !important;
-
+#windshield{
+  position:absolute;
+  inset:0 0 48% 0;
+  overflow:hidden;
   background:
     linear-gradient(
       to bottom,
-      rgba(3,8,12,0.88),
-      rgba(3,8,12,0.97)
+      #72b9dc 0%,
+      #a5d6e5 48%,
+      #899b86 49%,
+      #73836e 70%,
+      #566454 100%
     );
-
-  border-top: 1px solid rgba(255,255,255,0.08);
 }
 
-/* ---------------------------------------------------------
-   INSTRUMENT ROW
-   --------------------------------------------------------- */
-
-#instrumentCluster,
-.instrument-cluster,
-#gauges,
-.gauges {
-  position: absolute !important;
-
-  top: 20px !important;
-  left: 50% !important;
-
-  transform: translateX(-50%) !important;
-
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-
-  gap: 24px;
-
-  width: 360px !important;
-  height: 92px !important;
-
-  z-index: 700 !important;
+#horizon{
+  position:absolute;
+  left:-10%;
+  width:120%;
+  bottom:30%;
+  height:22%;
+  background:#84947c;
+  border-radius:50% 50% 0 0;
 }
 
-/* Speed / RPM circles */
-
-.speed,
-.rpm,
-.speedometer,
-.tachometer {
-  width: 88px !important;
-  height: 88px !important;
-
-  flex: 0 0 88px;
-
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: rgba(3,8,12,0.92);
-  border: 6px solid rgba(80,90,100,0.45);
-
-  font-weight: 700;
-  text-align: center;
+#road{
+  position:absolute;
+  left:50%;
+  bottom:-8%;
+  width:70%;
+  height:75%;
+  transform:translateX(-50%);
+  background:#303638;
+  clip-path:polygon(
+    44% 0,
+    56% 0,
+    100% 100%,
+    0 100%
+  );
 }
 
-/* Gear display */
-
-#gearDisplay,
-.gear-display {
-  width: 82px !important;
-  height: 82px !important;
-
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 16px;
-
-  background: rgba(3,8,12,0.92);
-  border: 5px solid rgba(80,90,100,0.4);
-
-  font-size: 30px;
-  font-weight: 800;
+#road:before,
+#road:after{
+  content:"";
+  position:absolute;
+  top:0;
+  width:5px;
+  height:100%;
+  background:#fff;
 }
 
-/* ---------------------------------------------------------
-   STATUS LINE
-   --------------------------------------------------------- */
-
-#status,
-.status,
-#statusBar,
-.status-bar {
-  position: absolute !important;
-
-  top: 115px !important;
-  left: 50% !important;
-
-  transform: translateX(-50%) !important;
-
-  width: 500px !important;
-  max-width: 90vw;
-
-  text-align: center;
-
-  white-space: nowrap;
-
-  font-size: 16px !important;
-  letter-spacing: 1px;
-
-  z-index: 700 !important;
+#road:before{
+  left:28%;
 }
 
-/* ---------------------------------------------------------
-   STEERING
-   --------------------------------------------------------- */
-
-#steering,
-.steering,
-#steeringWheel,
-.steering-wheel {
-  position: absolute !important;
-
-  left: 28px !important;
-  bottom: 88px !important;
-
-  width: 190px !important;
-  height: 190px !important;
-
-  z-index: 750 !important;
-
-  border-radius: 50%;
+#road:after{
+  right:28%;
 }
 
-/* ---------------------------------------------------------
-   GEAR SELECTOR
-   --------------------------------------------------------- */
-
-#gearSelector,
-.gear-selector,
-.gear-controls {
-  position: absolute !important;
-
-  left: 50% !important;
-  bottom: 82px !important;
-
-  transform: translateX(-50%) !important;
-
-  width: 82px !important;
-
-  display: flex !important;
-  flex-direction: column;
-  gap: 7px;
-
-  z-index: 800 !important;
+#roadMarkings{
+  position:absolute;
+  left:50%;
+  top:0;
+  width:7px;
+  height:100%;
+  transform:translateX(-50%);
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      #fff 0 55px,
+      transparent 55px 105px
+    );
 }
 
-#gearSelector button,
-.gear-selector button,
-.gear-controls button {
-  width: 82px !important;
-  height: 48px !important;
-
-  border-radius: 12px;
-
-  background: rgba(5,10,15,0.9);
-  border: 2px solid rgba(255,255,255,0.10);
-
-  color: #fff;
-
-  font-size: 16px;
-  font-weight: 700;
+.tree{
+  position:absolute;
+  bottom:18%;
+  width:95px;
+  height:130px;
 }
 
-#gearSelector button.active,
-.gear-selector button.active,
-.gear-controls button.active {
-  background: #5795b0;
-  border-color: #80d8ff;
+.tree:before{
+  content:"";
+  position:absolute;
+  left:40px;
+  bottom:0;
+  width:16px;
+  height:78px;
+  background:#674b32;
 }
 
-/* ---------------------------------------------------------
-   PEDALS
-   --------------------------------------------------------- */
-
-#pedals,
-.pedals,
-#pedalControls,
-.pedal-controls {
-  position: absolute !important;
-
-  right: 24px !important;
-  bottom: 80px !important;
-
-  display: flex !important;
-  gap: 16px;
-
-  z-index: 750 !important;
+.tree:after{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  width:95px;
+  height:95px;
+  border-radius:50%;
+  background:#326844;
+  box-shadow:
+    35px 20px 0 #39734a,
+    65px 10px 0 #2d603d;
 }
 
-#brake,
-.brake,
-#accelerator,
-.accelerator {
-  width: 112px !important;
-  height: 190px !important;
-
-  border-radius: 22px;
-
-  background: rgba(5,10,15,0.78);
-
-  display: flex !important;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-
-  padding-top: 15px;
+.tree.left{
+  left:2%;
 }
 
-#brake,
-.brake {
-  border: 3px solid rgba(220,75,75,0.75);
+.tree.left2{
+  left:13%;
+  transform:scale(.72);
 }
 
-#accelerator,
-.accelerator {
-  border: 3px solid rgba(60,190,230,0.75);
+.tree.right{
+  right:2%;
+  transform:scale(1.05);
 }
 
-#brake .pedal-fill,
-.brake .pedal-fill,
-#accelerator .pedal-fill,
-.accelerator .pedal-fill {
-  width: 54px;
-  height: 125px;
-  margin-top: 18px;
-
-  border-radius: 30px;
-
-  background: rgba(255,255,255,0.06);
-
-  overflow: hidden;
+.tree.right2{
+  right:15%;
+  transform:scale(.7);
 }
 
-/* ---------------------------------------------------------
-   BOTTOM CONTROL BAR
-   --------------------------------------------------------- */
+/* =========================================================
+   MIRROR
+========================================================= */
 
-#bottomControls,
-.bottom-controls,
-#controlBar,
-.control-bar {
-  position: absolute !important;
-
-  left: 16px !important;
-  right: 16px !important;
-  bottom: 10px !important;
-
-  height: 58px !important;
-
-  display: grid !important;
-  grid-template-columns: repeat(6, 1fr);
-
-  gap: 10px;
-
-  z-index: 900 !important;
+#mirror{
+  position:absolute;
+  z-index:20;
+  top:8%;
+  left:50%;
+  width:min(52vw,560px);
+  height:105px;
+  transform:translateX(-50%);
+  border:7px solid #101418;
+  border-radius:28px;
+  background:
+    linear-gradient(
+      to bottom,
+      #a9d4df 0 50%,
+      #73826e 51% 100%
+    );
+  box-shadow:0 12px 25px #0008;
+  overflow:hidden;
 }
 
-#bottomControls button,
-.bottom-controls button,
-#controlBar button,
-.control-bar button {
-  min-width: 0;
-
-  height: 58px !important;
-
-  border-radius: 14px;
-
-  background: rgba(4,9,14,0.84);
-
-  border: 2px solid rgba(255,255,255,0.10);
-
-  color: #fff;
-
-  font-size: 12px;
-  letter-spacing: 1px;
+#mirrorRoad{
+  position:absolute;
+  left:50%;
+  bottom:0;
+  width:28%;
+  height:72%;
+  transform:translateX(-50%);
+  background:#303638;
+  clip-path:polygon(
+    40% 0,
+    60% 0,
+    100% 100%,
+    0 100%
+  );
 }
 
-#bottomControls button.active,
-.bottom-controls button.active,
-#controlBar button.active,
-.control-bar button.active {
-  background: rgba(65,135,165,0.65);
-  border-color: #78d5f5;
+#mirrorLine{
+  position:absolute;
+  left:50%;
+  top:20%;
+  bottom:5%;
+  width:3px;
+  transform:translateX(-50%);
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      white 0 15px,
+      transparent 15px 28px
+    );
 }
 
-/* ---------------------------------------------------------
-   PORTRAIT PHONE
-   --------------------------------------------------------- */
+/* =========================================================
+   TOP STATUS
+========================================================= */
 
-@media (orientation: portrait) and (max-width: 700px) {
+#vehicleStatus{
+  position:absolute;
+  z-index:30;
+  top:22px;
+  left:22px;
+  width:275px;
+  padding:20px 22px;
+  border-radius:22px;
+  background:#102a3ad9;
+  border:1px solid #ffffff22;
+  box-shadow:0 10px 25px #0005;
+}
 
-  #vehicleInfo,
-  .vehicle-info,
-  #vehiclePanel,
-  .vehicle-panel {
-    top: 18px !important;
-    left: 18px !important;
-    width: 270px !important;
-    min-height: 92px !important;
-    padding: 16px 18px !important;
+.vehicleTitle{
+  font-size:23px;
+  font-weight:800;
+  letter-spacing:3px;
+}
+
+.condition{
+  margin-top:10px;
+  font-size:15px;
+  color:#ddd;
+}
+
+.greenDot{
+  color:#45e276;
+}
+
+.topButton{
+  position:absolute;
+  z-index:31;
+  top:22px;
+  width:105px;
+  height:90px;
+  border-radius:22px;
+  background:#102a3ae8;
+  border:1px solid #ffffff2c;
+  box-shadow:0 8px 20px #0004;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+
+.topButton .icon{
+  font-size:30px;
+}
+
+.topButton span{
+  font-size:13px;
+  font-weight:bold;
+  letter-spacing:2px;
+}
+
+#mirrorButton{
+  right:140px;
+}
+
+#settingsButton{
+  right:22px;
+}
+
+#exitButton{
+  position:absolute;
+  z-index:31;
+  top:125px;
+  left:22px;
+  width:105px;
+  height:82px;
+  border-radius:22px;
+  background:#102a3ae8;
+  border:1px solid #ffffff2c;
+  font-weight:bold;
+  letter-spacing:2px;
+}
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+#dashboard{
+  position:absolute;
+  z-index:40;
+  left:0;
+  right:0;
+  top:52%;
+  bottom:0;
+  background:
+    linear-gradient(
+      to bottom,
+      #05090b 0%,
+      #070c0f 100%
+    );
+}
+
+#instruments{
+  height:105px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:20px;
+}
+
+.gauge{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  border:6px solid #20282c;
+  background:#05080a;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  box-shadow:inset 0 0 0 2px #111;
+}
+
+.gaugeValue{
+  font-size:30px;
+  font-weight:bold;
+}
+
+.gaugeLabel{
+  font-size:10px;
+  color:#aaa;
+  letter-spacing:1px;
+}
+
+#gearDisplay{
+  width:78px;
+  height:78px;
+  border:5px solid #20282c;
+  border-radius:15px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:34px;
+  font-weight:bold;
+  background:#06090b;
+}
+
+#statusStrip{
+  height:42px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:18px;
+  font-size:15px;
+  color:#cfd5d7;
+}
+
+.ready{
+  color:#45df75;
+}
+
+/* =========================================================
+   CONTROLS
+========================================================= */
+
+#controls{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  top:145px;
+}
+
+/* steering wheel */
+
+#steering{
+  position:absolute;
+  left:28px;
+  bottom:88px;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  border:12px solid #30383c;
+  background:#080c0fdd;
+  box-shadow:
+    inset 0 0 0 10px #11181c,
+    0 8px 20px #0008;
+  touch-action:none;
+  cursor:pointer;
+}
+
+#steeringInner{
+  position:absolute;
+  inset:28px;
+  border:8px solid #222a2e;
+  border-radius:50%;
+}
+
+#steeringHub{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:70px;
+  height:70px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:#10161a;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  font-weight:bold;
+  letter-spacing:2px;
+}
+
+.steerArrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:28px;
+  color:#ddd;
+}
+
+#steerLeft{
+  left:8px;
+}
+
+#steerRight{
+  right:8px;
+}
+
+/* gear selector */
+
+#gearSelector{
+  position:absolute;
+  left:50%;
+  bottom:78px;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.gearButton{
+  width:72px;
+  height:44px;
+  border-radius:12px;
+  background:#080d10;
+  border:2px solid #20292d;
+  font-size:17px;
+  font-weight:bold;
+}
+
+.gearButton.active{
+  background:#397d98;
+  border-color:#73c9e8;
+}
+
+/* pedals */
+
+#pedals{
+  position:absolute;
+  right:28px;
+  bottom:78px;
+  display:flex;
+  gap:15px;
+}
+
+.pedal{
+  width:105px;
+  height:190px;
+  border-radius:24px;
+  background:#080d10cc;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:space-between;
+  padding:15px 10px;
+}
+
+#brake{
+  border:2px solid #a94e4e;
+}
+
+#accel{
+  border:2px solid #2c9bbd;
+}
+
+.pedalName{
+  font-size:14px;
+  font-weight:bold;
+  letter-spacing:2px;
+}
+
+.pedalTrack{
+  position:relative;
+  width:48px;
+  height:115px;
+  border-radius:25px;
+  background:#11181c;
+  border:1px solid #283237;
+  overflow:hidden;
+}
+
+.pedalFill{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:0%;
+  background:#ffffff18;
+}
+
+.pedalPercent{
+  font-size:12px;
+  color:#aaa;
+}
+
+/* switches */
+
+#switches{
+  position:absolute;
+  left:15px;
+  right:15px;
+  bottom:12px;
+  height:64px;
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:10px;
+}
+
+.switch{
+  border-radius:15px;
+  background:#080d10;
+  border:2px solid #20292d;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  cursor:pointer;
+}
+
+.switchIcon{
+  font-size:20px;
+}
+
+.switchText{
+  font-size:10px;
+  letter-spacing:1px;
+}
+
+.switch.active{
+  border-color:#67c8e6;
+  background:#163c4b;
+}
+
+/* =========================================================
+   RESPONSIVE PHONE
+========================================================= */
+
+@media(max-width:600px){
+
+  #windshield{
+    inset:0 0 48% 0;
   }
 
-  #vehicleInfo h1,
-  .vehicle-info h1,
-  #vehiclePanel h1,
-  .vehicle-panel h1 {
-    font-size: 20px;
+  #mirror{
+    top:11%;
+    width:54vw;
+    height:78px;
+    border-width:5px;
+    border-radius:22px;
   }
 
-  #vehicleInfo p,
-  .vehicle-info p,
-  #vehiclePanel p,
-  .vehicle-panel p {
-    font-size: 14px;
+  #vehicleStatus{
+    top:14px;
+    left:14px;
+    width:220px;
+    padding:14px;
   }
 
-  #mirror,
-  .mirror,
-  .mirror-container {
-    top: 145px !important;
-    left: 50% !important;
+  .vehicleTitle{
+    font-size:17px;
+  }
 
-    width: 62vw !important;
-    height: 105px !important;
+  .condition{
+    font-size:12px;
   }
 
   #mirrorButton,
-  .mirror-button {
-    top: 18px !important;
-    right: 112px !important;
-
-    width: 90px !important;
-    height: 82px !important;
+  #settingsButton{
+    top:14px;
+    width:70px;
+    height:68px;
   }
 
-  #settingsButton,
-  .settings-button {
-    top: 18px !important;
-    right: 18px !important;
-
-    width: 90px !important;
-    height: 82px !important;
+  #mirrorButton{
+    right:94px;
   }
 
-  #exitButton,
-  .exit-button,
-  .exit {
-    top: 125px !important;
-    left: 18px !important;
-
-    width: 90px !important;
-    height: 82px !important;
+  #settingsButton{
+    right:14px;
   }
 
-  #road,
-  .road,
-  #scene,
-  .scene,
-  #game,
-  .game {
-    bottom: 45% !important;
+  .topButton .icon{
+    font-size:20px;
   }
 
-  #dashboard,
-  .dashboard,
-  #cockpit,
-  .cockpit {
-    height: 45% !important;
+  .topButton span{
+    font-size:8px;
   }
 
-  #instrumentCluster,
-  .instrument-cluster,
-  #gauges,
-  .gauges {
-    top: 16px !important;
-
-    width: 330px !important;
-    gap: 15px !important;
+  #exitButton{
+    top:94px;
+    left:14px;
+    width:70px;
+    height:55px;
+    font-size:10px;
   }
 
-  .speed,
-  .rpm,
-  .speedometer,
-  .tachometer {
-    width: 82px !important;
-    height: 82px !important;
+  #dashboard{
+    top:48%;
   }
 
-  #gearDisplay,
-  .gear-display {
-    width: 76px !important;
-    height: 76px !important;
+  #instruments{
+    height:78px;
+    gap:7px;
   }
 
-  #status,
-  .status,
-  #statusBar,
-  .status-bar {
-    top: 104px !important;
-
-    font-size: 13px !important;
-
-    width: 94vw !important;
+  .gauge{
+    width:68px;
+    height:68px;
+    border-width:4px;
   }
 
-  #steering,
-  .steering,
-  #steeringWheel,
-  .steering-wheel {
-    left: 20px !important;
-    bottom: 72px !important;
-
-    width: 150px !important;
-    height: 150px !important;
+  .gaugeValue{
+    font-size:21px;
   }
 
-  #gearSelector,
-  .gear-selector,
-  .gear-controls {
-    bottom: 72px !important;
-    width: 70px !important;
+  .gaugeLabel{
+    font-size:8px;
   }
 
-  #gearSelector button,
-  .gear-selector button,
-  .gear-controls button {
-    width: 70px !important;
-    height: 42px !important;
+  #gearDisplay{
+    width:55px;
+    height:55px;
+    font-size:24px;
   }
 
-  #pedals,
-  .pedals,
-  #pedalControls,
-  .pedal-controls {
-    right: 14px !important;
-    bottom: 72px !important;
-    gap: 10px !important;
+  #statusStrip{
+    height:32px;
+    font-size:10px;
+    gap:7px;
   }
 
-  #brake,
-  .brake,
-  #accelerator,
-  .accelerator {
-    width: 82px !important;
-    height: 160px !important;
+  #controls{
+    top:110px;
   }
 
-  #bottomControls,
-  .bottom-controls,
-  #controlBar,
-  .control-bar {
-    left: 10px !important;
-    right: 10px !important;
-    bottom: 8px !important;
-
-    height: 54px !important;
-
-    gap: 6px !important;
+  #steering{
+    left:12px;
+    bottom:70px;
+    width:130px;
+    height:130px;
+    border-width:8px;
   }
 
-  #bottomControls button,
-  .bottom-controls button,
-  #controlBar button,
-  .control-bar button {
-    height: 54px !important;
-    font-size: 10px !important;
-  }
-}
-
-/* ---------------------------------------------------------
-   VERY SMALL PHONES
-   --------------------------------------------------------- */
-
-@media (orientation: portrait) and (max-width: 430px) {
-
-  #mirror,
-  .mirror,
-  .mirror-container {
-    top: 135px !important;
-    width: 64vw !important;
-    height: 90px !important;
+  #steeringInner{
+    inset:21px;
+    border-width:5px;
   }
 
-  #steering,
-  .steering,
-  #steeringWheel,
-  .steering-wheel {
-    width: 125px !important;
-    height: 125px !important;
-    left: 12px !important;
+  #steeringHub{
+    width:52px;
+    height:52px;
+    font-size:9px;
   }
 
-  #brake,
-  .brake,
-  #accelerator,
-  .accelerator {
-    width: 72px !important;
-    height: 145px !important;
+  .steerArrow{
+    font-size:18px;
   }
 
-  #gearSelector,
-  .gear-selector,
-  .gear-controls {
-    width: 62px !important;
+  #gearSelector{
+    bottom:70px;
+    gap:3px;
   }
 
-  #gearSelector button,
-  .gear-selector button,
-  .gear-controls button {
-    width: 62px !important;
-    height: 38px !important;
+  .gearButton{
+    width:48px;
+    height:32px;
+    border-radius:9px;
+    font-size:12px;
+  }
+
+  #pedals{
+    right:10px;
+    bottom:70px;
+    gap:6px;
+  }
+
+  .pedal{
+    width:62px;
+    height:145px;
+    border-radius:17px;
+    padding:10px 6px;
+  }
+
+  .pedalName{
+    font-size:10px;
+  }
+
+  .pedalTrack{
+    width:36px;
+    height:92px;
+  }
+
+  .pedalPercent{
+    font-size:9px;
+  }
+
+  #switches{
+    left:8px;
+    right:8px;
+    bottom:8px;
+    height:52px;
+    gap:5px;
+  }
+
+  .switch{
+    border-radius:10px;
+  }
+
+  .switchIcon{
+    font-size:15px;
+  }
+
+  .switchText{
+    font-size:7px;
   }
 }
 
-/* ---------------------------------------------------------
-   LANDSCAPE
-   --------------------------------------------------------- */
+/* =========================================================
+   LANDSCAPE PHONE
+========================================================= */
 
-@media (orientation: landscape) {
+@media(max-height:600px){
 
-  #vehicleInfo,
-  .vehicle-info,
-  #vehiclePanel,
-  .vehicle-panel {
-    top: 20px !important;
-    left: 20px !important;
-    width: 285px !important;
+  #windshield{
+    inset:0 0 43% 0;
   }
 
-  #mirror,
-  .mirror,
-  .mirror-container {
-    top: 20px !important;
-    width: min(42vw, 700px) !important;
-    height: 105px !important;
+  #dashboard{
+    top:43%;
   }
 
-  #road,
-  .road,
-  #scene,
-  .scene,
-  #game,
-  .game {
-    bottom: 34% !important;
+  #instruments{
+    height:65px;
   }
 
-  #dashboard,
-  .dashboard,
-  #cockpit,
-  .cockpit {
-    height: 34% !important;
+  .gauge{
+    width:58px;
+    height:58px;
   }
 
-  #instrumentCluster,
-  .instrument-cluster,
-  #gauges,
-  .gauges {
-    top: 12px !important;
+  .gaugeValue{
+    font-size:18px;
   }
 
-  #status,
-  .status,
-  #statusBar,
-  .status-bar {
-    top: 105px !important;
+  #gearDisplay{
+    width:50px;
+    height:50px;
+    font-size:20px;
   }
 
-  #steering,
-  .steering,
-  #steeringWheel,
-  .steering-wheel {
-    left: 28px !important;
-    bottom: 68px !important;
-    width: 150px !important;
-    height: 150px !important;
+  #statusStrip{
+    height:25px;
   }
 
-  #gearSelector,
-  .gear-selector,
-  .gear-controls {
-    bottom: 65px !important;
+  #controls{
+    top:90px;
   }
 
-  #pedals,
-  .pedals,
-  #pedalControls,
-  .pedal-controls {
-    right: 28px !important;
-    bottom: 65px !important;
+  #steering{
+    width:120px;
+    height:120px;
+    bottom:55px;
   }
 
-  #brake,
-  .brake,
-  #accelerator,
-  .accelerator {
-    width: 100px !important;
-    height: 150px !important;
+  #gearSelector{
+    bottom:55px;
   }
 
-  #bottomControls,
-  .bottom-controls,
-  #controlBar,
-  .control-bar {
-    bottom: 7px !important;
-    height: 48px !important;
+  #pedals{
+    bottom:55px;
   }
 
-  #bottomControls button,
-  .bottom-controls button,
-  #controlBar button,
-  .control-bar button {
-    height: 48px !important;
+  .pedal{
+    height:125px;
+  }
+
+  #switches{
+    height:44px;
   }
 }
 </style>
@@ -885,9 +839,9 @@ canvas {
 
 <div id="game">
 
-  <!-- ================= WINDSHIELD ================= -->
+  <!-- OUTSIDE WORLD -->
 
-  <section id="windshield">
+  <div id="windshield">
 
     <div id="horizon"></div>
 
@@ -905,452 +859,832 @@ canvas {
       <div id="mirrorLine"></div>
     </div>
 
-  </section>
-
-  <!-- ================= TOP UI ================= -->
-
-  <div id="vehicleStatus">
-    <div class="vehicleTitle">WAYFLO • VEHICLE 01</div>
-    <div class="condition">
-      <span class="greenDot">●</span>
-      CONDITION <strong id="condition">100%</strong>
+    <div id="vehicleStatus">
+      <div class="vehicleTitle">WAYFLO</div>
+      <div class="condition">
+        <span class="greenDot">●</span>
+        SYSTEM READY
+      </div>
     </div>
+
+    <button class="topButton" id="mirrorButton">
+      <div class="icon">◉</div>
+      <span>MIRROR</span>
+    </button>
+
+    <button class="topButton" id="settingsButton">
+      <div class="icon">⚙</div>
+      <span>SETTINGS</span>
+    </button>
+
+    <button id="exitButton">
+      EXIT
+    </button>
+
   </div>
 
-  <button class="topButton" id="mirrorButton">
-    <div class="icon">▱</div>
-    <span>MIRROR</span>
-  </button>
 
-  <button class="topButton" id="settingsButton">
-    <div class="icon">⚙</div>
-    <span>SETTINGS</span>
-  </button>
+  <!-- DASHBOARD -->
 
-  <button id="exitButton">↪<br>EXIT</button>
-
-  <!-- ================= DASHBOARD ================= -->
-
-  <section id="dashboard">
+  <div id="dashboard">
 
     <div id="instruments">
 
       <div class="gauge">
-        <div class="gaugeValue" id="speed">0</div>
+        <div class="gaugeValue" id="speedValue">0</div>
         <div class="gaugeLabel">KM/H</div>
       </div>
 
-      <div id="gearDisplay">P</div>
-
       <div class="gauge">
-        <div class="gaugeValue" id="rpm">800</div>
+        <div class="gaugeValue" id="rpmValue">800</div>
         <div class="gaugeLabel">RPM</div>
       </div>
+
+      <div id="gearDisplay">N</div>
 
     </div>
 
     <div id="statusStrip">
-      <span class="ready">● READY</span>
+      <span id="driveStatus">PARKED</span>
       <span>•</span>
-      <span>TEMP <strong id="temp">88</strong>°C</span>
+      <span id="steerStatus">STEER 0°</span>
       <span>•</span>
-      <span>FUEL <strong id="fuel">100</strong>%</span>
-      <span>•</span>
-      <span>☀️ CLEAR</span>
+      <span class="ready">READY</span>
     </div>
 
-    <!-- ================= CONTROLS ================= -->
 
     <div id="controls">
 
       <!-- STEERING -->
 
       <div id="steering">
+
         <div id="steeringInner"></div>
+
         <div class="steerArrow" id="steerLeft">‹</div>
+
+        <div id="steeringHub">
+          WAYFLO
+        </div>
+
         <div class="steerArrow" id="steerRight">›</div>
-        <div id="steeringHub">WAYFLO</div>
+
       </div>
+
 
       <!-- GEAR SELECTOR -->
 
       <div id="gearSelector">
 
-        <button class="gearButton active" data-gear="P">P</button>
-        <button class="gearButton" data-gear="R">R</button>
-        <button class="gearButton" data-gear="N">N</button>
-        <button class="gearButton" data-gear="D">D</button>
+        <button class="gearButton" data-gear="R">
+          R
+        </button>
+
+        <button class="gearButton active" data-gear="N">
+          N
+        </button>
+
+        <button class="gearButton" data-gear="D">
+          D
+        </button>
 
       </div>
+
 
       <!-- PEDALS -->
 
       <div id="pedals">
 
         <div class="pedal" id="brake">
-          <div class="pedalName">BRAKE</div>
+
+          <div class="pedalName">
+            BRAKE
+          </div>
+
           <div class="pedalTrack">
             <div class="pedalFill" id="brakeFill"></div>
           </div>
-          <div class="pedalPercent" id="brakePercent">0%</div>
+
+          <div class="pedalPercent" id="brakePercent">
+            0%
+          </div>
+
         </div>
 
+
         <div class="pedal" id="accel">
-          <div class="pedalName">ACCEL</div>
+
+          <div class="pedalName">
+            ACCEL
+          </div>
+
           <div class="pedalTrack">
             <div class="pedalFill" id="accelFill"></div>
           </div>
-          <div class="pedalPercent" id="accelPercent">0%</div>
+
+          <div class="pedalPercent" id="accelPercent">
+            0%
+          </div>
+
         </div>
 
       </div>
 
-      <!-- BOTTOM SWITCHES -->
+
+      <!-- SWITCHES -->
 
       <div id="switches">
 
-        <button class="switch" data-switch="lights">
-          <div class="switchIcon">◉</div>
+        <button class="switch" data-name="LIGHTS">
+          <div class="switchIcon">☼</div>
           <div class="switchText">LIGHTS</div>
         </button>
 
-        <button class="switch" data-switch="left">
-          <div class="switchIcon">←</div>
-          <div class="switchText">LEFT</div>
-        </button>
-
-        <button class="switch" data-switch="hazard">
-          <div class="switchIcon">△</div>
+        <button class="switch" data-name="HAZARD">
+          <div class="switchIcon">⚠</div>
           <div class="switchText">HAZARD</div>
         </button>
 
-        <button class="switch" data-switch="right">
-          <div class="switchIcon">→</div>
-          <div class="switchText">RIGHT</div>
+        <button class="switch" data-name="PARK">
+          <div class="switchIcon">P</div>
+          <div class="switchText">PARK</div>
         </button>
 
-        <button class="switch" data-switch="wipers">
-          <div class="switchIcon">◇</div>
-          <div class="switchText">WIPERS</div>
+        <button class="switch" data-name="ABS">
+          <div class="switchIcon">A</div>
+          <div class="switchText">ABS</div>
         </button>
 
-        <button class="switch" data-switch="map">
-          <div class="switchIcon">□</div>
-          <div class="switchText">MAP</div>
+        <button class="switch" data-name="TRACTION">
+          <div class="switchIcon">T</div>
+          <div class="switchText">TRACTION</div>
+        </button>
+
+        <button class="switch" data-name="ENGINE">
+          <div class="switchIcon">⚡</div>
+          <div class="switchText">ENGINE</div>
         </button>
 
       </div>
 
     </div>
-  </section>
+
+  </div>
 
 </div>
 
-<script>
 
+<script>
 /* =========================================================
-   WAYFLO DRIVING SYSTEM
+   WAYFLO SIMULATION STATE
 ========================================================= */
 
-let gear = "P";
-let speed = 0;
-let rpm = 800;
-let temp = 88;
-let fuel = 100;
+const state = {
+  gear: "N",
+  speed: 0,
+  rpm: 800,
+  steering: 0,
+  throttle: 0,
+  brake: 0,
+  engine: true,
+  mirror: true
+};
 
-let acceleration = 0;
-let braking = 0;
-let steering = 0;
-
-let lastTime = performance.now();
 
 /* =========================================================
    ELEMENTS
 ========================================================= */
 
-const speedEl = document.getElementById("speed");
-const rpmEl = document.getElementById("rpm");
-const tempEl = document.getElementById("temp");
-const fuelEl = document.getElementById("fuel");
-const gearDisplay = document.getElementById("gearDisplay");
+const speedValue =
+  document.getElementById("speedValue");
 
-const brakeFill = document.getElementById("brakeFill");
-const accelFill = document.getElementById("accelFill");
+const rpmValue =
+  document.getElementById("rpmValue");
 
-const brakePercent = document.getElementById("brakePercent");
-const accelPercent = document.getElementById("accelPercent");
+const gearDisplay =
+  document.getElementById("gearDisplay");
 
-const steeringEl = document.getElementById("steering");
+const driveStatus =
+  document.getElementById("driveStatus");
+
+const steerStatus =
+  document.getElementById("steerStatus");
+
+const steering =
+  document.getElementById("steering");
+
+const accel =
+  document.getElementById("accel");
+
+const brake =
+  document.getElementById("brake");
+
+const accelFill =
+  document.getElementById("accelFill");
+
+const brakeFill =
+  document.getElementById("brakeFill");
+
+const accelPercent =
+  document.getElementById("accelPercent");
+
+const brakePercent =
+  document.getElementById("brakePercent");
+
+const mirror =
+  document.getElementById("mirror");
+
 
 /* =========================================================
-   GEAR SELECTOR
+   GEAR CONTROL
 ========================================================= */
 
-document.querySelectorAll(".gearButton").forEach(button => {
+document
+  .querySelectorAll(".gearButton")
+  .forEach(button => {
 
-  button.addEventListener("click", () => {
+    button.addEventListener("click", () => {
 
-    gear = button.dataset.gear;
+      state.gear =
+        button.dataset.gear;
 
-    document.querySelectorAll(".gearButton")
-      .forEach(b => b.classList.remove("active"));
+      document
+        .querySelectorAll(".gearButton")
+        .forEach(b => {
+          b.classList.remove("active");
+        });
 
-    button.classList.add("active");
+      button.classList.add("active");
 
-    gearDisplay.textContent = gear;
+      gearDisplay.textContent =
+        state.gear;
 
-    if(gear === "P" || gear === "N"){
-      speed = 0;
-    }
+      updateStatus();
+    });
 
   });
 
-});
-
-/* =========================================================
-   PEDAL SLIDER
-========================================================= */
-
-function makePedal(element, fill, percent, callback){
-
-  let active = false;
-
-  function update(clientY){
-
-    const rect = element.getBoundingClientRect();
-
-    let value =
-      (rect.bottom - clientY) / rect.height;
-
-    value = Math.max(0,Math.min(1,value));
-
-    callback(value);
-
-    fill.style.height = (value * 100) + "%";
-    percent.textContent =
-      Math.round(value * 100) + "%";
-  }
-
-  element.addEventListener("pointerdown",e=>{
-    active=true;
-    element.setPointerCapture(e.pointerId);
-    update(e.clientY);
-  });
-
-  element.addEventListener("pointermove",e=>{
-    if(active) update(e.clientY);
-  });
-
-  element.addEventListener("pointerup",()=>{
-    active=false;
-  });
-
-  element.addEventListener("pointercancel",()=>{
-    active=false;
-  });
-}
-
-makePedal(
-  document.getElementById("accel"),
-  accelFill,
-  accelPercent,
-  value => acceleration=value
-);
-
-makePedal(
-  document.getElementById("brake"),
-  brakeFill,
-  brakePercent,
-  value => braking=value
-);
 
 /* =========================================================
    STEERING
 ========================================================= */
 
-let steeringActive=false;
+let steeringActive = false;
 
-steeringEl.addEventListener("pointerdown",e=>{
-  steeringActive=true;
-  steeringEl.setPointerCapture(e.pointerId);
-  updateSteering(e.clientX);
-});
+function updateSteeringFromPointer(x){
 
-steeringEl.addEventListener("pointermove",e=>{
-  if(steeringActive) updateSteering(e.clientX);
-});
+  const rect =
+    steering.getBoundingClientRect();
 
-steeringEl.addEventListener("pointerup",()=>{
-  steeringActive=false;
-  steering=0;
-  steeringEl.style.transform="rotate(0deg)";
-});
+  const center =
+    rect.left + rect.width / 2;
 
-function updateSteering(x){
+  const radius =
+    rect.width / 2;
 
-  const rect=steeringEl.getBoundingClientRect();
+  let value =
+    ((x - center) / radius) * 45;
 
-  const centre=rect.left+rect.width/2;
+  value =
+    Math.max(-45, Math.min(45, value));
 
-  steering=(x-centre)/(rect.width/2);
+  state.steering =
+    Math.round(value);
 
-  steering=Math.max(-1,Math.min(1,steering));
+  steering.style.transform =
+    "rotate(" +
+    state.steering +
+    "deg)";
 
-  steeringEl.style.transform=
-    "rotate("+(steering*70)+"deg)";
+  steerStatus.textContent =
+    "STEER " +
+    state.steering +
+    "°";
 }
 
+steering.addEventListener(
+  "pointerdown",
+  event => {
+
+    steeringActive = true;
+
+    steering.setPointerCapture(
+      event.pointerId
+    );
+
+    updateSteeringFromPointer(
+      event.clientX
+    );
+  }
+);
+
+steering.addEventListener(
+  "pointermove",
+  event => {
+
+    if(!steeringActive) return;
+
+    updateSteeringFromPointer(
+      event.clientX
+    );
+  }
+);
+
+function releaseSteering(){
+
+  steeringActive = false;
+
+  state.steering *= 0.35;
+
+  steering.style.transform =
+    "rotate(" +
+    state.steering +
+    "deg)";
+
+  steerStatus.textContent =
+    "STEER " +
+    Math.round(state.steering) +
+    "°";
+}
+
+steering.addEventListener(
+  "pointerup",
+  releaseSteering
+);
+
+steering.addEventListener(
+  "pointercancel",
+  releaseSteering
+);
+
+
 /* =========================================================
-   LIGHTS / SWITCHES
+   PEDAL HANDLING
 ========================================================= */
 
-document.querySelectorAll(".switch").forEach(button=>{
+function setPedal(
+  pedal,
+  fill,
+  percent,
+  value
+){
 
-  button.addEventListener("click",()=>{
+  const v =
+    Math.max(0, Math.min(100, value));
 
-    const type=button.dataset.switch;
+  fill.style.height =
+    v + "%";
 
-    if(type==="hazard"){
+  percent.textContent =
+    Math.round(v) + "%";
+}
 
-      document
-        .querySelectorAll('[data-switch="left"],[data-switch="right"]')
-        .forEach(b=>b.classList.remove("active"));
+function pedalPointer(
+  pedal,
+  callback,
+  event
+){
 
-    }
+  const rect =
+    pedal.getBoundingClientRect();
 
-    if(type==="left"){
+  let value =
+    1 -
+    ((event.clientY - rect.top) /
+    rect.height);
 
-      document
-        .querySelector('[data-switch="right"]')
-        .classList.remove("active");
+  value =
+    Math.max(0, Math.min(1, value));
 
-    }
+  callback(value * 100);
+}
 
-    if(type==="right"){
+let accelActive = false;
+let brakeActive = false;
 
-      document
-        .querySelector('[data-switch="left"]')
-        .classList.remove("active");
+accel.addEventListener(
+  "pointerdown",
+  event => {
 
-    }
+    accelActive = true;
 
-    button.classList.toggle("active");
+    accel.setPointerCapture(
+      event.pointerId
+    );
+
+    pedalPointer(
+      accel,
+      value => {
+        state.throttle = value;
+
+        setPedal(
+          accel,
+          accelFill,
+          accelPercent,
+          value
+        );
+      },
+      event
+    );
+  }
+);
+
+accel.addEventListener(
+  "pointermove",
+  event => {
+
+    if(!accelActive) return;
+
+    pedalPointer(
+      accel,
+      value => {
+        state.throttle = value;
+
+        setPedal(
+          accel,
+          accelFill,
+          accelPercent,
+          value
+        );
+      },
+      event
+    );
+  }
+);
+
+function releaseAccel(){
+
+  accelActive = false;
+  state.throttle = 0;
+
+  setPedal(
+    accel,
+    accelFill,
+    accelPercent,
+    0
+  );
+}
+
+accel.addEventListener(
+  "pointerup",
+  releaseAccel
+);
+
+accel.addEventListener(
+  "pointercancel",
+  releaseAccel
+);
+
+
+brake.addEventListener(
+  "pointerdown",
+  event => {
+
+    brakeActive = true;
+
+    brake.setPointerCapture(
+      event.pointerId
+    );
+
+    pedalPointer(
+      brake,
+      value => {
+        state.brake = value;
+
+        setPedal(
+          brake,
+          brakeFill,
+          brakePercent,
+          value
+        );
+      },
+      event
+    );
+  }
+);
+
+brake.addEventListener(
+  "pointermove",
+  event => {
+
+    if(!brakeActive) return;
+
+    pedalPointer(
+      brake,
+      value => {
+        state.brake = value;
+
+        setPedal(
+          brake,
+          brakeFill,
+          brakePercent,
+          value
+        );
+      },
+      event
+    );
+  }
+);
+
+function releaseBrake(){
+
+  brakeActive = false;
+  state.brake = 0;
+
+  setPedal(
+    brake,
+    brakeFill,
+    brakePercent,
+    0
+  );
+}
+
+brake.addEventListener(
+  "pointerup",
+  releaseBrake
+);
+
+brake.addEventListener(
+  "pointercancel",
+  releaseBrake
+);
+
+
+/* =========================================================
+   SWITCHES
+========================================================= */
+
+document
+  .querySelectorAll(".switch")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        button.classList.toggle("active");
+
+        const name =
+          button.dataset.name;
+
+        if(name === "ENGINE"){
+          state.engine =
+            button.classList.contains(
+              "active"
+            );
+        }
+
+      }
+    );
 
   });
 
-});
 
 /* =========================================================
-   DRIVING PHYSICS
+   MIRROR
 ========================================================= */
 
-function updateDriving(dt){
+document
+  .getElementById("mirrorButton")
+  .addEventListener(
+    "click",
+    () => {
 
-  const forward =
-    gear==="D";
+      state.mirror =
+        !state.mirror;
 
-  const reverse =
-    gear==="R";
-
-  if(forward || reverse){
-
-    const accelerationForce =
-      acceleration * 32;
-
-    const brakingForce =
-      braking * 55;
-
-    speed +=
-      accelerationForce * dt;
-
-    speed -=
-      brakingForce * dt;
-
-    if(acceleration===0){
-      speed -= 5 * dt;
+      mirror.style.display =
+        state.mirror
+          ? "block"
+          : "none";
     }
+  );
 
-    speed=Math.max(0,Math.min(140,speed));
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+document
+  .getElementById("settingsButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      alert(
+        "WAYFLO SETTINGS\n\n" +
+        "Touch the steering wheel to steer.\n" +
+        "Touch and drag the pedals.\n" +
+        "Select R, N or D to change gear."
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   EXIT
+========================================================= */
+
+document
+  .getElementById("exitButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      state.speed = 0;
+      state.throttle = 0;
+      state.brake = 100;
+      state.gear = "N";
+
+      gearDisplay.textContent = "N";
+
+      document
+        .querySelectorAll(".gearButton")
+        .forEach(button => {
+
+          button.classList.toggle(
+            "active",
+            button.dataset.gear === "N"
+          );
+
+        });
+
+      updateStatus();
+    }
+  );
+
+
+/* =========================================================
+   SIMULATION
+========================================================= */
+
+let lastTime =
+  performance.now();
+
+function simulation(now){
+
+  const delta =
+    Math.min(
+      0.05,
+      (now - lastTime) / 1000
+    );
+
+  lastTime = now;
+
+
+  if(!state.engine){
+
+    state.speed -=
+      12 * delta;
+
+    state.rpm = 0;
 
   }else{
 
-    speed=0;
+    let acceleration = 0;
+
+    if(state.gear === "D"){
+
+      acceleration +=
+        state.throttle * 0.055;
+
+    }
+
+    if(state.gear === "R"){
+
+      acceleration -=
+        state.throttle * 0.035;
+
+    }
+
+    acceleration -=
+      state.brake * 0.09;
+
+    acceleration -=
+      1.5;
+
+    state.speed +=
+      acceleration * delta * 60;
+
+    if(
+      state.speed < 0 &&
+      state.gear !== "R"
+    ){
+      state.speed = 0;
+    }
+
+    if(
+      state.speed > 0 &&
+      state.gear === "R"
+    ){
+      state.speed = 0;
+    }
+
+    state.speed =
+      Math.max(
+        -35,
+        Math.min(160, state.speed)
+      );
+
+
+    const targetRPM =
+      800 +
+      Math.abs(state.speed) * 42 +
+      state.throttle * 25;
+
+    state.rpm +=
+      (targetRPM - state.rpm) *
+      Math.min(1, delta * 5);
 
   }
 
-  if(reverse){
-    speed=Math.min(speed,25);
-  }
 
-  rpm =
-    800 +
-    acceleration * 4200 +
-    speed * 15;
+  speedValue.textContent =
+    Math.round(
+      Math.abs(state.speed)
+    );
 
-  if(braking>.1){
-    rpm-=braking*300;
-  }
+  rpmValue.textContent =
+    Math.round(state.rpm);
 
-  rpm=Math.max(800,Math.min(6500,rpm));
+  gearDisplay.textContent =
+    state.gear;
 
-  if(acceleration>.7 && temp<105){
-    temp+=.012*dt*60;
-  }else if(temp>88){
-    temp-=.004*dt*60;
-  }
+  updateStatus();
 
-  temp=Math.max(88,Math.min(105,temp));
-
-  fuel-=
-    acceleration * .0007 * dt * 60;
-
-  fuel=Math.max(0,fuel);
-
-  speedEl.textContent=Math.round(speed);
-  rpmEl.textContent=Math.round(rpm);
-  tempEl.textContent=Math.round(temp);
-  fuelEl.textContent=Math.round(fuel);
-
+  requestAnimationFrame(
+    simulation
+  );
 }
 
+
 /* =========================================================
-   ANIMATION LOOP
+   STATUS
 ========================================================= */
 
-function loop(now){
+function updateStatus(){
 
-  let dt=(now-lastTime)/1000;
+  if(!state.engine){
 
-  lastTime=now;
+    driveStatus.textContent =
+      "ENGINE OFF";
 
-  dt=Math.min(dt,.05);
+    return;
+  }
 
-  updateDriving(dt);
+  if(state.brake > 5){
 
-  requestAnimationFrame(loop);
+    driveStatus.textContent =
+      "BRAKING";
+
+    return;
+  }
+
+  if(
+    state.gear === "D" &&
+    state.throttle > 2
+  ){
+
+    driveStatus.textContent =
+      "DRIVING";
+
+    return;
+  }
+
+  if(
+    state.gear === "R" &&
+    state.throttle > 2
+  ){
+
+    driveStatus.textContent =
+      "REVERSING";
+
+    return;
+  }
+
+  if(state.gear === "N"){
+
+    driveStatus.textContent =
+      "NEUTRAL";
+
+    return;
+  }
+
+  driveStatus.textContent =
+    "READY";
 }
 
-requestAnimationFrame(loop);
-
-/* =========================================================
-   MIRROR BUTTON
-========================================================= */
-
-document.getElementById("mirrorButton")
-  .addEventListener("click",()=>{
-
-    const mirror=document.getElementById("mirror");
-
-    mirror.style.opacity =
-      mirror.style.opacity==="0.35" ? "1" : "0.35";
-
-  });
 
 /* =========================================================
    START
 ========================================================= */
 
-console.log("WAYFLO cockpit ready");
+updateStatus();
+
+requestAnimationFrame(
+  simulation
+);
 
 </script>
 
