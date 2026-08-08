@@ -3,15 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#071015">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>WAYFLO World Simulator</title>
 
 <style>
 *{
   box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
   -webkit-user-select:none;
   user-select:none;
+  -webkit-touch-callout:none;
+  -webkit-tap-highlight-color:transparent;
 }
 
 html,body{
@@ -19,9 +21,9 @@ html,body{
   width:100%;
   height:100%;
   overflow:hidden;
-  background:#071015;
+  background:#05080b;
+  font-family:Arial,Helvetica,sans-serif;
   color:white;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   touch-action:none;
 }
 
@@ -30,2478 +32,884 @@ button{
   color:white;
   border:0;
   outline:0;
-  -webkit-user-select:none;
-  user-select:none;
   touch-action:none;
 }
-
-/* =====================================================
-   MAIN WORLD / WINDSCREEN
-===================================================== */
 
 #game{
   position:fixed;
   inset:0;
-  width:100%;
-  height:100svh;
   overflow:hidden;
-  background:#82bad6;
+  background:#111;
 }
 
-#scene{
+/* ---------------- WINDSCREEN ---------------- */
+
+#world{
   position:absolute;
-  inset:0;
+  top:0;
+  left:0;
+  width:100%;
+  height:67%;
   overflow:hidden;
   background:
-    linear-gradient(
-      to bottom,
-      #62a6ce 0%,
-      #9ccce2 42%,
-      #dce0d4 58%,
-      #677267 59%,
-      #313632 100%
-    );
-  transition:filter .6s;
+    linear-gradient(#69b7e5 0%,#a9d9ee 53%,#788e78 54%,#465143 100%);
 }
-
-/* sky glow */
 
 #sun{
   position:absolute;
-  width:72px;
-  height:72px;
-  right:16%;
-  top:16%;
+  width:18vw;
+  height:18vw;
+  max-width:110px;
+  max-height:110px;
   border-radius:50%;
-  background:#fff3a5;
-  box-shadow:0 0 55px rgba(255,243,165,.8);
+  background:#fff0a5;
+  right:17%;
+  top:15%;
+  box-shadow:0 0 35px rgba(255,235,150,.45);
 }
-
-/* distant hills */
 
 .hill{
   position:absolute;
-  left:-10%;
-  width:120%;
+  left:-20%;
+  width:140%;
+  height:24%;
+  bottom:23%;
+  background:#718b91;
   border-radius:50% 50% 0 0;
 }
 
 .hill.back{
-  bottom:40%;
-  height:18%;
-  background:#627d8a;
-  opacity:.7;
+  bottom:19%;
+  background:#879b75;
+  transform:scaleX(1.15);
 }
-
-.hill.front{
-  bottom:36%;
-  height:16%;
-  background:#66745f;
-}
-
-/* fields */
-
-.field{
-  position:absolute;
-  bottom:28%;
-  width:55%;
-  height:20%;
-  background:#74865e;
-}
-
-.field.left{
-  left:-4%;
-  transform:skewY(-8deg);
-}
-
-.field.right{
-  right:-4%;
-  transform:skewY(8deg);
-}
-
-/* trees */
 
 .tree{
   position:absolute;
-  width:65px;
-  height:115px;
+  bottom:18%;
+  width:18px;
+  height:95px;
+  background:#654a32;
 }
 
 .tree:before{
   content:"";
   position:absolute;
-  left:29px;
-  bottom:0;
-  width:9px;
-  height:60px;
-  background:#553927;
-}
-
-.tree:after{
-  content:"";
-  position:absolute;
-  left:0;
-  top:0;
-  width:64px;
-  height:64px;
+  width:90px;
+  height:90px;
+  left:-36px;
+  top:-55px;
   border-radius:50%;
-  background:#2f603b;
+  background:#285b38;
   box-shadow:
-    20px 13px 0 #396b43,
-    -15px 23px 0 #397047;
+    32px 18px 0 #316c40,
+    -22px 20px 0 #347247;
 }
 
-.tree.a{
-  left:4%;
-  bottom:38%;
-  transform:scale(.72);
-}
-
-.tree.b{
-  right:5%;
-  bottom:37%;
-  transform:scale(1.05);
-}
-
-.tree.c{
-  left:20%;
-  bottom:39%;
-  transform:scale(.45);
-}
-
-.tree.d{
-  right:23%;
-  bottom:39%;
-  transform:scale(.5);
-}
-
-/* road */
+.t1{left:8%;transform:scale(.85)}
+.t2{left:25%;transform:scale(.6)}
+.t3{right:17%;transform:scale(1.05)}
+.t4{right:5%;transform:scale(.72)}
 
 #road{
   position:absolute;
-  left:50%;
-  bottom:0;
-  width:145%;
-  height:52%;
-  transform:translateX(-50%);
-  background:#3f4140;
-  clip-path:polygon(
-    40% 0,
-    60% 0,
-    100% 100%,
-    0 100%
-  );
+  left:12%;
+  width:76%;
+  height:48%;
+  bottom:-1%;
+  background:#34383a;
+  clip-path:polygon(34% 0,66% 0,100% 100%,0 100%);
 }
 
-.roadEdge{
+#road:before,
+#road:after{
+  content:"";
   position:absolute;
   top:0;
-  width:5px;
   height:100%;
-  background:#f3f3ef;
+  width:4px;
+  background:#f4f4f0;
 }
 
-.roadEdge.left{
-  left:40%;
-}
+#road:before{left:31%}
+#road:after{right:31%}
 
-.roadEdge.right{
-  right:40%;
-}
-
-#centreLine{
+.lane{
   position:absolute;
   left:50%;
-  bottom:0;
-  width:8px;
-  height:48%;
   transform:translateX(-50%);
-  overflow:hidden;
-}
-
-.roadMark{
-  position:absolute;
-  left:50%;
-  width:8px;
-  height:46px;
-  transform:translateX(-50%);
+  width:5px;
+  height:10%;
+  background:white;
   border-radius:4px;
-  background:#f4f4ef;
 }
 
-/* windshield edge */
+.l1{top:6%}
+.l2{top:28%}
+.l3{top:51%}
+.l4{top:75%}
 
-#glass{
+/* ---------------- TOP UI ---------------- */
+
+#topbar{
   position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(0,0,0,.17),
-      transparent 12%,
-      transparent 88%,
-      rgba(0,0,0,.17)
-    );
+  z-index:20;
+  top:3%;
+  left:4%;
+  right:4%;
+  height:10%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
 
-/* =====================================================
-   MIRROR
-===================================================== */
-
-#mirror{
-  position:absolute;
-  z-index:50;
-  top:max(12px,env(safe-area-inset-top));
-  left:50%;
-  width:min(47vw,320px);
-  height:min(16vw,90px);
-  min-height:62px;
-  transform:translateX(-50%);
-  border:4px solid rgba(4,7,9,.9);
-  border-radius:22px;
-  overflow:hidden;
-  background:#18272d;
-  box-shadow:0 7px 22px rgba(0,0,0,.45);
+.info{
+  background:rgba(8,17,24,.78);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:18px;
+  padding:10px 15px;
+  min-width:48%;
+  box-shadow:0 8px 20px rgba(0,0,0,.22);
 }
 
-#rearSky{
-  position:absolute;
-  inset:0;
-  background:
-    linear-gradient(
-      to bottom,
-      #5f9dc1 0 50%,
-      #5b665b 51% 100%
-    );
+.info strong{
+  display:block;
+  font-size:clamp(15px,4vw,23px);
+  letter-spacing:2px;
 }
 
-#rearRoad{
-  position:absolute;
-  left:50%;
-  bottom:-15px;
-  width:125%;
-  height:70%;
-  transform:translateX(-50%);
-  background:#3e403f;
-  clip-path:polygon(
-    34% 0,
-    66% 0,
-    100% 100%,
-    0 100%
-  );
+.info small{
+  display:block;
+  margin-top:5px;
+  opacity:.8;
+  font-size:clamp(11px,3vw,16px);
 }
 
-#rearVehicle{
-  position:absolute;
-  left:50%;
-  bottom:15px;
-  width:23px;
-  height:13px;
-  transform:translateX(-50%);
-  border-radius:5px;
-  background:#4d5558;
-}
-
-#mirrorLabel{
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:4px;
-  text-align:center;
-  font-size:7px;
-  letter-spacing:1.5px;
-  color:rgba(255,255,255,.55);
-}
-
-/* =====================================================
-   TOP STATUS
-===================================================== */
-
-#statusCard{
-  position:absolute;
-  z-index:70;
-  left:20px;
-  top:max(18px,env(safe-area-inset-top));
-  padding:12px 17px;
-  border-radius:15px;
-  background:rgba(9,20,26,.62);
-  border:1px solid rgba(255,255,255,.14);
-  backdrop-filter:blur(9px);
-}
-
-#vehicleTitle{
-  font-size:15px;
-  font-weight:900;
-  letter-spacing:1px;
-}
-
-#condition{
-  margin-top:4px;
-  font-size:10px;
-  opacity:.75;
-}
-
-.statusDot{
-  display:inline-block;
-  width:8px;
-  height:8px;
-  margin-right:7px;
-  border-radius:50%;
-  background:#35d269;
-}
-
-/* top-right */
-
-#topActions{
-  position:absolute;
-  z-index:70;
-  top:max(18px,env(safe-area-inset-top));
-  right:18px;
+.topBtns{
   display:flex;
   gap:8px;
 }
 
-.actionButton{
-  width:68px;
-  height:68px;
-  border-radius:15px;
-  background:rgba(9,20,26,.55);
-  border:1px solid rgba(255,255,255,.28);
-  backdrop-filter:blur(8px);
+.topBtn{
+  width:66px;
+  height:66px;
+  border-radius:17px;
+  background:rgba(8,17,24,.78);
+  border:1px solid rgba(255,255,255,.25);
   display:flex;
   flex-direction:column;
-  justify-content:center;
   align-items:center;
-  gap:4px;
+  justify-content:center;
+  font-size:27px;
 }
 
-.actionIcon{
-  font-size:22px;
+.topBtn span{
+  font-size:9px;
+  letter-spacing:1px;
+  margin-top:4px;
 }
-
-.actionLabel{
-  font-size:8px;
-  font-weight:800;
-  letter-spacing:.6px;
-}
-
-.actionButton:active,
-.controlButton:active,
-.gearButton:active{
-  transform:scale(.94);
-}
-
-/* exit */
 
 #exit{
   position:absolute;
-  z-index:70;
-  left:20px;
-  top:110px;
-  width:68px;
-  height:68px;
-  border-radius:15px;
-  background:rgba(9,20,26,.55);
-  border:1px solid rgba(255,255,255,.28);
-  backdrop-filter:blur(8px);
-  font-size:9px;
-  font-weight:900;
+  z-index:21;
+  left:4%;
+  top:14%;
+  width:76px;
+  height:66px;
+  border-radius:17px;
+  background:rgba(8,17,24,.75);
+  border:1px solid rgba(255,255,255,.22);
+  font-size:12px;
+  font-weight:bold;
 }
 
-#exit span{
-  display:block;
-  font-size:22px;
-  margin-bottom:4px;
+/* ---------------- MIRROR ---------------- */
+
+#mirror{
+  position:absolute;
+  z-index:15;
+  top:15%;
+  left:18%;
+  width:64%;
+  height:12%;
+  min-height:62px;
+  border:6px solid #111;
+  border-radius:28px;
+  overflow:hidden;
+  background:linear-gradient(#72b7df,#718d75);
+  box-shadow:0 5px 15px rgba(0,0,0,.4);
 }
 
-/* =====================================================
-   COCKPIT / DASHBOARD
-===================================================== */
+#mirrorRoad{
+  position:absolute;
+  left:42%;
+  bottom:0;
+  width:16%;
+  height:65%;
+  background:#34383a;
+  clip-path:polygon(40% 0,60% 0,100% 100%,0 100%);
+}
+
+#mirrorCar{
+  position:absolute;
+  left:48%;
+  bottom:19%;
+  width:4%;
+  height:10%;
+  background:#333;
+  border-radius:3px;
+}
+
+/* ---------------- COCKPIT ---------------- */
 
 #cockpit{
   position:absolute;
-  z-index:20;
-  left:0;
-  right:0;
+  z-index:30;
   bottom:0;
-  height:38%;
-  min-height:245px;
-  pointer-events:none;
+  left:0;
+  width:100%;
+  height:36%;
   background:
-    linear-gradient(
-      to bottom,
-      transparent,
-      rgba(3,6,7,.18) 12%,
-      rgba(3,5,6,.78) 44%,
-      #080b0d 100%
-    );
+    linear-gradient(rgba(5,8,11,.93),rgba(3,5,7,.98));
+  border-top:2px solid rgba(255,255,255,.12);
+  box-shadow:0 -15px 30px rgba(0,0,0,.3);
 }
 
 /* dashboard */
 
 #dashboard{
   position:absolute;
-  left:50%;
-  bottom:84px;
-  width:min(370px,48vw);
-  height:130px;
-  transform:translateX(-50%);
-  border-radius:28px 28px 0 0;
-  background:rgba(7,10,12,.87);
-  border:1px solid rgba(255,255,255,.12);
+  left:22%;
+  right:22%;
+  top:4%;
+  height:30%;
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:12px;
-  box-shadow:0 -5px 20px rgba(0,0,0,.3);
+  gap:10px;
 }
 
 .gauge{
-  width:92px;
-  height:92px;
+  width:74px;
+  height:74px;
   border-radius:50%;
-  border:3px solid #4c5153;
-  background:
-    radial-gradient(
-      circle,
-      #171b1d 0 56%,
-      #080a0b 57%
-    );
+  border:5px solid #343b40;
+  background:#080b0e;
   display:flex;
   flex-direction:column;
-  align-items:center;
   justify-content:center;
+  align-items:center;
+  box-shadow:inset 0 0 15px #000;
 }
 
-.gaugeValue{
-  font-size:25px;
-  font-weight:900;
+.gauge b{
+  font-size:22px;
 }
 
-.gaugeLabel{
+.gauge small{
   font-size:8px;
-  letter-spacing:1px;
-  opacity:.65;
+  opacity:.7;
 }
 
 #gearDisplay{
-  width:56px;
-  height:62px;
+  width:58px;
+  height:58px;
+  border:3px solid #343b40;
   border-radius:10px;
-  border:2px solid #4d5254;
-  background:#0a0d0f;
+  background:#090c0f;
   display:flex;
-  flex-direction:column;
   align-items:center;
   justify-content:center;
+  font-size:28px;
+  font-weight:bold;
 }
 
-#gearDisplay small{
-  font-size:7px;
-  opacity:.55;
-}
-
-#gearDisplay strong{
-  font-size:27px;
-}
-
-#dashboardInfo{
+#status{
   position:absolute;
-  left:0;
-  right:0;
-  bottom:10px;
+  left:4%;
+  right:4%;
+  top:34%;
   text-align:center;
-  font-size:8px;
-  letter-spacing:.6px;
-  color:rgba(255,255,255,.62);
-}
-
-/* =====================================================
-   STEERING
-===================================================== */
-
-#steeringZone{
-  position:absolute;
-  z-index:100;
-  left:20px;
-  bottom:88px;
-  width:180px;
-  height:180px;
-  pointer-events:auto;
-  touch-action:none;
-}
-
-#steeringWheel{
-  position:absolute;
-  inset:5px;
-  border-radius:50%;
-  border:13px solid rgba(15,17,18,.76);
-  background:
-    radial-gradient(
-      circle,
-      rgba(255,255,255,.04) 0 22%,
-      transparent 23%
-    );
-  box-shadow:
-    inset 0 0 0 2px rgba(255,255,255,.16),
-    0 8px 22px rgba(0,0,0,.4);
-  transition:transform .04s linear;
-}
-
-#steeringWheel:before,
-#steeringWheel:after{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:11px;
-  height:68px;
-  transform-origin:50% 100%;
-  background:rgba(13,15,16,.82);
-  border-radius:5px;
-}
-
-#steeringWheel:before{
-  transform:translate(-50%,-100%) rotate(0deg);
-}
-
-#steeringWheel:after{
-  transform:translate(-50%,-100%) rotate(120deg);
-}
-
-#wheelHub{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:62px;
-  height:62px;
-  transform:translate(-50%,-50%);
-  border-radius:50%;
-  background:rgba(19,22,24,.9);
-  border:2px solid rgba(255,255,255,.15);
-  display:flex;
-  align-items:center;
-  justify-content:center;
   font-size:10px;
-  font-weight:900;
+  letter-spacing:1px;
+  opacity:.8;
 }
 
-#steeringHint{
+/* steering */
+
+#steering{
   position:absolute;
-  left:50%;
-  bottom:0;
-  transform:translateX(-50%);
-  white-space:nowrap;
-  font-size:7px;
-  color:rgba(255,255,255,.45);
+  left:3%;
+  bottom:18%;
+  width:30vw;
+  height:30vw;
+  max-width:190px;
+  max-height:190px;
+  border:10px solid rgba(255,255,255,.18);
+  border-radius:50%;
+  background:rgba(10,15,19,.42);
+  box-shadow:
+    inset 0 0 0 5px rgba(255,255,255,.08),
+    0 5px 20px rgba(0,0,0,.4);
 }
 
-/* =====================================================
-   PEDALS
-===================================================== */
-
-#pedals{
+#steerInner{
   position:absolute;
-  z-index:100;
-  right:22px;
-  bottom:92px;
+  inset:22%;
+  border-radius:50%;
+  border:5px solid rgba(255,255,255,.16);
   display:flex;
-  gap:12px;
-  pointer-events:auto;
-}
-
-.pedal{
-  width:72px;
-  height:165px;
-  position:relative;
-  overflow:hidden;
-  border-radius:18px;
-  background:rgba(7,10,11,.42);
-  backdrop-filter:blur(6px);
-  border:2px solid rgba(255,255,255,.23);
-  touch-action:none;
-}
-
-#brake{
-  border-color:rgba(255,90,90,.55);
-}
-
-#accelerator{
-  border-color:rgba(60,190,230,.65);
-}
-
-.pedalTitle{
-  position:absolute;
-  top:12px;
-  left:0;
-  right:0;
-  text-align:center;
-  font-size:9px;
-  font-weight:800;
-  letter-spacing:.8px;
-  opacity:.75;
-  pointer-events:none;
-}
-
-.pedalTrack{
-  position:absolute;
-  left:50%;
-  top:43px;
-  bottom:15px;
-  width:28px;
-  transform:translateX(-50%);
-  border-radius:14px;
-  background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,255,255,.1);
-}
-
-.pedalFill{
-  position:absolute;
-  left:3px;
-  right:3px;
-  bottom:3px;
-  height:0;
-  border-radius:11px;
-  background:rgba(255,255,255,.24);
-}
-
-.pedalValue{
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:8px;
-  text-align:center;
-  font-size:8px;
-  font-weight:900;
-  pointer-events:none;
-}
-
-/* =====================================================
-   GEAR SELECTOR
-===================================================== */
-
-#gearSelector{
-  position:absolute;
-  z-index:105;
-  right:115px;
-  bottom:99px;
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-  pointer-events:auto;
-}
-
-.gearButton{
-  width:48px;
-  height:42px;
-  border-radius:10px;
-  background:rgba(8,11,13,.5);
-  border:1px solid rgba(255,255,255,.2);
-  backdrop-filter:blur(5px);
-  font-size:13px;
-  font-weight:900;
-}
-
-.gearButton.active{
-  background:rgba(75,166,207,.68);
-  border-color:#8ee3ff;
-  box-shadow:0 0 12px rgba(70,190,230,.35);
-}
-
-/* =====================================================
-   LOWER CONTROL BAR
-===================================================== */
-
-#controlBar{
-  position:absolute;
-  z-index:120;
-  left:18px;
-  right:18px;
-  bottom:max(10px,env(safe-area-inset-bottom));
-  height:66px;
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:7px;
-  pointer-events:auto;
-}
-
-.controlButton{
-  min-width:0;
-  border-radius:14px;
-  background:rgba(8,11,13,.5);
-  border:1px solid rgba(255,255,255,.22);
-  backdrop-filter:blur(7px);
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
+}
+
+#steerLogo{
+  font-size:11px;
+  font-weight:bold;
+  letter-spacing:2px;
+  opacity:.8;
+}
+
+.steerArrow{
+  position:absolute;
+  top:42%;
+  font-size:30px;
+  opacity:.7;
+}
+
+.leftArrow{left:5%}
+.rightArrow{right:5%}
+
+/* gear */
+
+#gears{
+  position:absolute;
+  left:48%;
+  bottom:23%;
+  transform:translateX(-50%);
+  width:54px;
+  display:flex;
+  flex-direction:column;
   gap:3px;
 }
 
-.controlIcon{
-  font-size:21px;
-  line-height:1;
+.gear{
+  width:54px;
+  height:38px;
+  border-radius:9px;
+  background:rgba(20,25,29,.82);
+  border:1px solid rgba(255,255,255,.14);
+  font-weight:bold;
+  font-size:15px;
 }
 
-.controlText{
-  font-size:7px;
-  font-weight:900;
-  letter-spacing:.5px;
+.gear.active{
+  background:#365e70;
+  border-color:#76c9e5;
 }
 
-.controlButton.active{
-  background:rgba(58,103,111,.62);
-  border-color:rgba(160,225,235,.65);
-}
+/* pedals */
 
-/* =====================================================
-   STATUS STRIP
-===================================================== */
-
-#bottomStatus{
+#pedals{
   position:absolute;
-  z-index:125;
-  left:18px;
-  right:18px;
-  bottom:80px;
-  height:24px;
+  right:4%;
+  bottom:17%;
+  height:66%;
   display:flex;
-  justify-content:space-around;
-  align-items:center;
-  font-size:8px;
-  color:rgba(255,255,255,.65);
-  pointer-events:none;
+  gap:10px;
 }
 
-.statusItem{
-  display:flex;
-  align-items:center;
-  gap:5px;
+.pedal{
+  position:relative;
+  width:65px;
+  height:100%;
+  border-radius:20px;
+  background:rgba(8,12,15,.55);
+  border:2px solid rgba(255,255,255,.2);
+  overflow:hidden;
 }
 
-.greenDot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:#37d26c;
-}
+.pedal.brake{border-color:rgba(220,90,90,.65)}
+.pedal.accel{border-color:rgba(70,190,220,.65)}
 
-/* =====================================================
-   MESSAGE
-===================================================== */
-
-#message{
+.pedalFill{
   position:absolute;
-  z-index:400;
-  left:50%;
-  top:43%;
-  transform:translate(-50%,-50%);
-  padding:10px 16px;
-  border-radius:12px;
-  background:rgba(5,8,10,.75);
-  backdrop-filter:blur(9px);
-  font-size:12px;
-  font-weight:800;
-  opacity:0;
-  pointer-events:none;
-  transition:.2s;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:0%;
+  background:rgba(255,255,255,.13);
 }
 
-#message.show{
-  opacity:1;
+.pedalLabel{
+  position:absolute;
+  top:8px;
+  left:0;
+  width:100%;
+  text-align:center;
+  font-size:9px;
+  letter-spacing:1px;
+  opacity:.75;
 }
 
-/* =====================================================
-   SETTINGS
-===================================================== */
+/* bottom controls */
 
-#settings{
-  position:fixed;
-  inset:0;
-  z-index:500;
-  display:none;
+#controls{
+  position:absolute;
+  z-index:40;
+  left:3%;
+  right:3%;
+  bottom:2%;
+  height:14%;
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:6px;
+}
+
+.control{
+  border-radius:13px;
+  background:rgba(10,15,19,.72);
+  border:1px solid rgba(255,255,255,.18);
+  display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
-  background:rgba(0,0,0,.72);
-  backdrop-filter:blur(9px);
-}
-
-#settings.open{
-  display:flex;
-}
-
-.settingsPanel{
-  width:min(90vw,390px);
-  padding:20px;
-  border-radius:20px;
-  background:#151a1d;
-  border:1px solid rgba(255,255,255,.2);
-}
-
-.settingsPanel h2{
-  margin:0 0 14px;
   font-size:20px;
 }
 
-.settingRow{
-  min-height:48px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  border-bottom:1px solid rgba(255,255,255,.08);
+.control span{
+  margin-top:3px;
+  font-size:7px;
+  letter-spacing:1px;
+  opacity:.8;
+}
+
+.control.on{
+  background:rgba(60,110,125,.7);
+  border-color:#8bd9ed;
+}
+
+/* message */
+
+#message{
+  position:absolute;
+  z-index:100;
+  top:30%;
+  left:50%;
+  transform:translateX(-50%);
+  padding:10px 18px;
+  border-radius:20px;
+  background:rgba(0,0,0,.72);
   font-size:12px;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
 }
 
-.settingToggle{
-  padding:7px 12px;
-  border-radius:9px;
-  background:#293337;
-  border:1px solid #566268;
-  font-size:10px;
-  font-weight:900;
+#message.show{opacity:1}
+
+/* mobile adjustments */
+
+@media(max-width:380px){
+  .topBtn{width:58px;height:58px}
+  #exit{width:68px;height:58px}
+  .gauge{width:62px;height:62px}
+  #steering{width:27vw;height:27vw}
+  .pedal{width:58px}
 }
 
-#closeSettings{
-  width:100%;
-  height:44px;
-  margin-top:16px;
-  border-radius:11px;
-  background:#42606a;
-  font-weight:900;
-}
-
-/* =====================================================
-   NIGHT
-===================================================== */
-
-body.night #scene{
-  filter:brightness(.45) saturate(.75);
-}
-
-body.night #sun{
-  background:#cbdcff;
-  box-shadow:0 0 30px #b8ccff;
-}
-
-/* =====================================================
-   PHONE ADJUSTMENTS
-===================================================== */
-
-@media(max-width:600px){
-
-  #statusCard{
-    left:12px;
-    padding:10px 13px;
-  }
-
-  #vehicleTitle{
-    font-size:12px;
-  }
-
-  #topActions{
-    right:12px;
-  }
-
-  .actionButton{
-    width:55px;
-    height:55px;
-  }
-
-  #exit{
-    left:12px;
-    top:92px;
-    width:58px;
-    height:58px;
-  }
-
-  #cockpit{
-    height:43%;
-  }
-
-  #dashboard{
-    bottom:72px;
-    width:330px;
-    height:112px;
-  }
-
-  .gauge{
-    width:78px;
-    height:78px;
-  }
-
-  .gaugeValue{
-    font-size:22px;
-  }
-
-  #gearDisplay{
-    width:48px;
-    height:55px;
-  }
-
-  #steeringZone{
-    left:8px;
-    bottom:72px;
-    width:158px;
-    height:158px;
-  }
-
-  #pedals{
-    right:10px;
-    bottom:76px;
-    gap:8px;
-  }
-
-  .pedal{
-    width:58px;
-    height:145px;
-  }
-
-  #gearSelector{
-    right:78px;
-    bottom:82px;
-  }
-
-  .gearButton{
-    width:42px;
-    height:35px;
-  }
-
-  #controlBar{
-    left:8px;
-    right:8px;
-    bottom:max(5px,env(safe-area-inset-bottom));
-    height:58px;
-    gap:4px;
-  }
-
-  .controlIcon{
-    font-size:17px;
-  }
-
-  .controlText{
-    font-size:6px;
-  }
-
-  #bottomStatus{
-    bottom:65px;
-    font-size:7px;
-  }
-
-}
-
-/* very short phone */
-
-@media(max-height:700px){
-
-  #mirror{
-    height:58px;
-  }
-
-  #cockpit{
-    min-height:220px;
-  }
-
-  #steeringZone{
-    transform:scale(.82);
-    transform-origin:bottom left;
-  }
-
-  #pedals{
-    transform:scale(.82);
-    transform-origin:bottom right;
-  }
-
-  #gearSelector{
-    transform:scale(.82);
-    transform-origin:bottom right;
-  }
-
+@media(min-width:600px){
+  #cockpit{height:38%}
 }
 </style>
 </head>
 
 <body>
-
 <div id="game">
 
-  <!-- WORLD -->
-
-  <div id="scene">
-
+  <div id="world">
     <div id="sun"></div>
-
+    <div class="hill"></div>
     <div class="hill back"></div>
-    <div class="hill front"></div>
 
-    <div class="field left"></div>
-    <div class="field right"></div>
-
-    <div class="tree a"></div>
-    <div class="tree b"></div>
-    <div class="tree c"></div>
-    <div class="tree d"></div>
+    <div class="tree t1"></div>
+    <div class="tree t2"></div>
+    <div class="tree t3"></div>
+    <div class="tree t4"></div>
 
     <div id="road">
-      <div class="roadEdge left"></div>
-      <div class="roadEdge right"></div>
+      <div class="lane l1"></div>
+      <div class="lane l2"></div>
+      <div class="lane l3"></div>
+      <div class="lane l4"></div>
     </div>
 
-    <div id="centreLine"></div>
-
-    <div id="glass"></div>
-
+    <div id="mirror">
+      <div id="mirrorRoad"></div>
+      <div id="mirrorCar"></div>
+    </div>
   </div>
 
-  <!-- REAR VIEW MIRROR -->
-
-  <div id="mirror">
-
-    <div id="rearSky"></div>
-    <div id="rearRoad"></div>
-    <div id="rearVehicle"></div>
-
-    <div id="mirrorLabel">
-      REAR VIEW
+  <div id="topbar">
+    <div class="info">
+      <strong>WAYFLO • CAR 01</strong>
+      <small>● CONDITION <b id="condition">100</b>%</small>
     </div>
 
-  </div>
-
-  <!-- TOP LEFT STATUS -->
-
-  <div id="statusCard">
-
-    <div id="vehicleTitle">
-      <span class="statusDot"></span>
-      WAYFLO • VEHICLE 01
+    <div class="topBtns">
+      <button class="topBtn" id="mirrorBtn">◉<span>MIRROR</span></button>
+      <button class="topBtn" id="settingsBtn">⚙<span>SETTINGS</span></button>
     </div>
-
-    <div id="condition">
-      CONDITION 100%
-    </div>
-
   </div>
 
-  <!-- TOP RIGHT -->
-
-  <div id="topActions">
-
-    <button class="actionButton" id="mirrorButton">
-      <span class="actionIcon">🪞</span>
-      <span class="actionLabel">MIRROR</span>
-    </button>
-
-    <button class="actionButton" id="settingsButton">
-      <span class="actionIcon">⚙️</span>
-      <span class="actionLabel">SETTINGS</span>
-    </button>
-
-  </div>
-
-  <!-- EXIT -->
-
-  <button id="exit">
-    <span>↪</span>
-    EXIT
-  </button>
-
-  <!-- COCKPIT -->
+  <button id="exit">↪<br>EXIT</button>
 
   <div id="cockpit">
 
-    <!-- DASHBOARD -->
-
     <div id="dashboard">
+      <div class="gauge">
+        <b id="speed">0</b>
+        <small>KM/H</small>
+      </div>
+
+      <div id="gearDisplay">P</div>
 
       <div class="gauge">
-
-        <div
-          class="gaugeValue"
-          id="speed"
-        >0</div>
-
-        <div class="gaugeLabel">
-          KM/H
-        </div>
-
+        <b id="rpm">800</b>
+        <small>RPM</small>
       </div>
-
-      <div id="gearDisplay">
-
-        <small>GEAR</small>
-
-        <strong id="gearDisplayValue">
-          P
-        </strong>
-
-      </div>
-
-      <div class="gauge">
-
-        <div
-          class="gaugeValue"
-          id="rpm"
-        >800</div>
-
-        <div class="gaugeLabel">
-          RPM
-        </div>
-
-      </div>
-
-      <div id="dashboardInfo">
-        TEMP <span id="temp">88</span>°C
-        • FUEL <span id="fuel">100</span>%
-        • <span id="driveStatus">READY</span>
-      </div>
-
     </div>
 
-    <!-- STEERING -->
-
-    <div id="steeringZone">
-
-      <div id="steeringWheel">
-
-        <div id="wheelHub">
-          WAYFLO
-        </div>
-
-      </div>
-
-      <div id="steeringHint">
-        STEER
-      </div>
-
+    <div id="status">
+      <span>● READY</span>
+      &nbsp; • &nbsp;
+      TEMP <span id="temp">88</span>°C
+      &nbsp; • &nbsp;
+      FUEL <span id="fuel">100</span>%
+      &nbsp; • &nbsp;
+      <span id="weather">☀ CLEAR</span>
     </div>
 
-    <!-- GEAR SELECTOR -->
-
-    <div id="gearSelector">
-
-      <button
-        class="gearButton active"
-        data-gear="P"
-      >P</button>
-
-      <button
-        class="gearButton"
-        data-gear="R"
-      >R</button>
-
-      <button
-        class="gearButton"
-        data-gear="N"
-      >N</button>
-
-      <button
-        class="gearButton"
-        data-gear="D"
-      >D</button>
-
+    <div id="steering">
+      <div id="steerInner">
+        <span id="steerLogo">WAYFLO</span>
+      </div>
+      <span class="steerArrow leftArrow">‹</span>
+      <span class="steerArrow rightArrow">›</span>
     </div>
 
-    <!-- PEDALS -->
+    <div id="gears">
+      <button class="gear active" data-gear="P">P</button>
+      <button class="gear" data-gear="R">R</button>
+      <button class="gear" data-gear="N">N</button>
+      <button class="gear" data-gear="D">D</button>
+    </div>
 
     <div id="pedals">
-
-      <div
-        class="pedal"
-        id="brake"
-      >
-
-        <div class="pedalTitle">
-          BRAKE
-        </div>
-
-        <div class="pedalTrack">
-          <div
-            class="pedalFill"
-            id="brakeFill"
-          ></div>
-        </div>
-
-        <div
-          class="pedalValue"
-          id="brakeValue"
-        >0%</div>
-
+      <div class="pedal brake" id="brake">
+        <div class="pedalFill"></div>
+        <div class="pedalLabel">BRAKE</div>
       </div>
 
-      <div
-        class="pedal"
-        id="accelerator"
-      >
-
-        <div class="pedalTitle">
-          ACCEL
-        </div>
-
-        <div class="pedalTrack">
-          <div
-            class="pedalFill"
-            id="accelFill"
-          ></div>
-        </div>
-
-        <div
-          class="pedalValue"
-          id="accelValue"
-        >0%</div>
-
+      <div class="pedal accel" id="accel">
+        <div class="pedalFill"></div>
+        <div class="pedalLabel">ACCEL</div>
       </div>
-
-    </div>
-
-    <!-- LOWER CONTROLS -->
-
-    <div id="controlBar">
-
-      <button
-        class="controlButton"
-        id="lights"
-      >
-        <span class="controlIcon">💡</span>
-        <span class="controlText">LIGHTS</span>
-      </button>
-
-      <button
-        class="controlButton"
-        id="leftIndicator"
-      >
-        <span class="controlIcon">←</span>
-        <span class="controlText">LEFT</span>
-      </button>
-
-      <button
-        class="controlButton"
-        id="hazard"
-      >
-        <span class="controlIcon">⚠</span>
-        <span class="controlText">HAZARD</span>
-      </button>
-
-      <button
-        class="controlButton"
-        id="rightIndicator"
-      >
-        <span class="controlIcon">→</span>
-        <span class="controlText">RIGHT</span>
-      </button>
-
-      <button
-        class="controlButton"
-        id="wipers"
-      >
-        <span class="controlIcon">♢</span>
-        <span class="controlText">WIPERS</span>
-      </button>
-
-      <button
-        class="controlButton"
-        id="mapButton"
-      >
-        <span class="controlIcon">🗺</span>
-        <span class="controlText">MAP</span>
-      </button>
-
-    </div>
-
-    <!-- STATUS -->
-
-    <div id="bottomStatus">
-
-      <div class="statusItem">
-        <span class="greenDot"></span>
-        READY
-      </div>
-
-      <div class="statusItem">
-        🌡 TEMP <span id="bottomTemp">88</span>°C
-      </div>
-
-      <div class="statusItem">
-        ⛽ FUEL <span id="bottomFuel">100</span>%
-      </div>
-
-      <div class="statusItem">
-        ☀ CLEAR
-      </div>
-
     </div>
 
   </div>
 
-  <!-- MESSAGE -->
+  <div id="controls">
+    <button class="control" id="lights">💡<span>LIGHTS</span></button>
+    <button class="control" id="left">←<span>LEFT</span></button>
+    <button class="control" id="hazard">⚠<span>HAZARD</span></button>
+    <button class="control" id="right">→<span>RIGHT</span></button>
+    <button class="control" id="wipers">♢<span>WIPERS</span></button>
+    <button class="control" id="map">🗺<span>MAP</span></button>
+  </div>
 
   <div id="message"></div>
-
-</div>
-
-<!-- SETTINGS -->
-
-<div id="settings">
-
-  <div class="settingsPanel">
-
-    <h2>WAYFLO SETTINGS</h2>
-
-    <div class="settingRow">
-      <span>Automatic headlights</span>
-      <button
-        class="settingToggle"
-        data-setting="autoLights"
-      >ON</button>
-    </div>
-
-    <div class="settingRow">
-      <span>Automatic wipers</span>
-      <button
-        class="settingToggle"
-        data-setting="autoWipers"
-      >ON</button>
-    </div>
-
-    <div class="settingRow">
-      <span>Traction control</span>
-      <button
-        class="settingToggle"
-        data-setting="traction"
-      >ON</button>
-    </div>
-
-    <div class="settingRow">
-      <span>ABS</span>
-      <button
-        class="settingToggle"
-        data-setting="abs"
-      >ON</button>
-    </div>
-
-    <div class="settingRow">
-      <span>Night mode</span>
-      <button
-        class="settingToggle"
-        data-setting="night"
-      >OFF</button>
-    </div>
-
-    <button id="closeSettings">
-      DONE
-    </button>
-
-  </div>
-
 </div>
 
 <script>
+/* =========================
+   WAYFLO CORE DRIVING MODEL
+   ========================= */
 
-/* =====================================================
-   VEHICLE
-===================================================== */
+let speed = 0;
+let rpm = 800;
+let gear = "P";
+let accel = 0;
+let brake = 0;
+let steering = 0;
+let fuel = 100;
+let temp = 88;
+let distance = 0;
 
-const car = {
+const speedEl = document.getElementById("speed");
+const rpmEl = document.getElementById("rpm");
+const gearEl = document.getElementById("gearDisplay");
+const fuelEl = document.getElementById("fuel");
+const tempEl = document.getElementById("temp");
+const conditionEl = document.getElementById("condition");
+const steerEl = document.getElementById("steering");
+const mirrorEl = document.getElementById("mirror");
 
-  speed:0,
-  rpm:800,
-  temp:88,
-  fuel:100,
-  damage:0,
-
-  gear:"P",
-
-  throttle:0,
-  brake:0,
-
-  steering:0,
-  steeringAngle:0,
-
-  headlights:false,
-  left:false,
-  right:false,
-  hazard:false,
-  wipers:false,
-
-  autoLights:true,
-  autoWipers:true,
-  traction:true,
-  abs:true,
-  night:false
-
-};
-
-/* =====================================================
-   HELPERS
-===================================================== */
-
-const $ =
-  id => document.getElementById(id);
-
-let messageTimer;
-
-function showMessage(text){
-
-  $("message").textContent = text;
-
-  $("message").classList.add("show");
-
-  clearTimeout(messageTimer);
-
-  messageTimer =
-    setTimeout(
-      () =>
-        $("message").classList.remove("show"),
-      1300
-    );
-
+function message(text){
+  const m=document.getElementById("message");
+  m.textContent=text;
+  m.classList.add("show");
+  clearTimeout(window.msgTimer);
+  window.msgTimer=setTimeout(()=>m.classList.remove("show"),1300);
 }
 
-/* =====================================================
-   GEARS
-===================================================== */
+/* ---------------- GEAR ---------------- */
 
-document
-.querySelectorAll(".gearButton")
-.forEach(button => {
+document.querySelectorAll(".gear").forEach(btn=>{
+  btn.addEventListener("pointerdown",e=>{
+    e.preventDefault();
 
-  button.addEventListener(
-    "click",
-    () => {
+    const newGear=btn.dataset.gear;
 
-      const requested =
-        button.dataset.gear;
-
-      if(
-        Math.abs(car.speed) > 3
-      ){
-
-        showMessage(
-          "SLOW DOWN TO CHANGE GEAR"
-        );
-
-        return;
-
-      }
-
-      car.gear =
-        requested;
-
-      document
-      .querySelectorAll(".gearButton")
-      .forEach(b =>
-        b.classList.toggle(
-          "active",
-          b === button
-        )
-      );
-
-      $("gearDisplayValue")
-        .textContent =
-        requested;
-
-      if(requested === "R")
-        showMessage("REVERSE");
-
-      if(requested === "D")
-        showMessage("DRIVE");
-
-      if(requested === "N")
-        showMessage("NEUTRAL");
-
-      if(requested === "P")
-        showMessage("PARK");
-
-    }
-  );
-
-});
-
-/* =====================================================
-   PEDALS
-===================================================== */
-
-function setupPedal(
-  element,
-  callback
-){
-
-  let pointer = null;
-
-  function update(event){
-
-    const rect =
-      element.getBoundingClientRect();
-
-    let value =
-      (
-        rect.bottom -
-        event.clientY
-      ) /
-      rect.height;
-
-    value =
-      Math.max(
-        0,
-        Math.min(
-          1,
-          value
-        )
-      );
-
-    callback(value);
-
-  }
-
-  element.addEventListener(
-    "pointerdown",
-    event => {
-
-      event.preventDefault();
-
-      pointer =
-        event.pointerId;
-
-      element.setPointerCapture(
-        pointer
-      );
-
-      update(event);
-
-    }
-  );
-
-  element.addEventListener(
-    "pointermove",
-    event => {
-
-      if(
-        event.pointer === pointer ||
-        event.pointerId === pointer
-      ){
-
-        update(event);
-
-      }
-
-    }
-  );
-
-  function release(){
-
-    pointer = null;
-    callback(0);
-
-  }
-
-  element.addEventListener(
-    "pointerup",
-    release
-  );
-
-  element.addEventListener(
-    "pointercancel",
-    release
-  );
-
-}
-
-setupPedal(
-  $("accelerator"),
-  value => car.throttle = value
-);
-
-setupPedal(
-  $("brake"),
-  value => car.brake = value
-);
-
-/* =====================================================
-   STEERING
-===================================================== */
-
-const steeringZone =
-  $("steeringZone");
-
-const steeringWheel =
-  $("steeringWheel");
-
-let steeringPointer =
-  null;
-
-let steeringStartX =
-  0;
-
-let steeringStart =
-  0;
-
-steeringZone.addEventListener(
-  "pointerdown",
-  event => {
-
-    event.preventDefault();
-
-    steeringPointer =
-      event.pointerId;
-
-    steeringZone.setPointerCapture(
-      steeringPointer
-    );
-
-    steeringStartX =
-      event.clientX;
-
-    steeringStart =
-      car.steering;
-
-  }
-);
-
-steeringZone.addEventListener(
-  "pointermove",
-  event => {
-
-    if(
-      event.pointerId !==
-      steeringPointer
-    )
+    if(Math.abs(speed)>2 && newGear==="P"){
+      message("STOP BEFORE SELECTING PARK");
       return;
-
-    const delta =
-      (
-        event.clientX -
-        steeringStartX
-      ) / 100;
-
-    car.steering =
-      Math.max(
-        -1,
-        Math.min(
-          1,
-          steeringStart + delta
-        )
-      );
-
-  }
-);
-
-function releaseSteering(){
-
-  steeringPointer =
-    null;
-
-}
-
-steeringZone.addEventListener(
-  "pointerup",
-  releaseSteering
-);
-
-steeringZone.addEventListener(
-  "pointercancel",
-  releaseSteering
-);
-
-/* =====================================================
-   SWITCHES
-===================================================== */
-
-function switchToggle(
-  id,
-  property
-){
-
-  $(id).addEventListener(
-    "click",
-    () => {
-
-      car[property] =
-        !car[property];
-
-      $(id).classList.toggle(
-        "active",
-        car[property]
-      );
-
     }
-  );
 
-}
+    gear=newGear;
 
-switchToggle(
-  "lights",
-  "headlights"
-);
+    document.querySelectorAll(".gear").forEach(x=>{
+      x.classList.toggle("active",x===btn);
+    });
 
-switchToggle(
-  "hazard",
-  "hazard"
-);
-
-switchToggle(
-  "wipers",
-  "wipers"
-);
-
-$("leftIndicator")
-.addEventListener(
-  "click",
-  () => {
-
-    car.left =
-      !car.left;
-
-    car.right =
-      false;
-
-    $("leftIndicator")
-      .classList.toggle(
-        "active",
-        car.left
-      );
-
-    $("rightIndicator")
-      .classList.remove(
-        "active"
-      );
-
-  }
-);
-
-$("rightIndicator")
-.addEventListener(
-  "click",
-  () => {
-
-    car.right =
-      !car.right;
-
-    car.left =
-      false;
-
-    $("rightIndicator")
-      .classList.toggle(
-        "active",
-        car.right
-      );
-
-    $("leftIndicator")
-      .classList.remove(
-        "active"
-      );
-
-  }
-);
-
-/* =====================================================
-   PHYSICS
-===================================================== */
-
-function physics(dt){
-
-  let acceleration = 0;
-
-  if(
-    car.gear === "D"
-  ){
-
-    acceleration +=
-      car.throttle * 38;
-
-  }
-
-  if(
-    car.gear === "R"
-  ){
-
-    acceleration -=
-      car.throttle * 24;
-
-  }
-
-  if(
-    car.gear === "P" ||
-    car.gear === "N"
-  ){
-
-    acceleration = 0;
-
-  }
-
-  /*
-    Natural resistance.
-  */
-
-  if(
-    Math.abs(car.speed) > .1
-  ){
-
-    acceleration -=
-      Math.sign(car.speed) *
-      (
-        3.5 +
-        Math.abs(car.speed) * .045
-      );
-
-  }
-
-  /*
-    Brake.
-  */
-
-  if(
-    car.brake > 0
-  ){
-
-    const brakeForce =
-      car.abs
-        ? 82
-        : 68;
-
-    acceleration -=
-      Math.sign(car.speed || 1) *
-      car.brake *
-      brakeForce;
-
-  }
-
-  /*
-    Update speed.
-  */
-
-  car.speed +=
-    acceleration * dt;
-
-  /*
-    Prevent tiny movement.
-  */
-
-  if(
-    Math.abs(car.speed) < .25 &&
-    car.brake > .2
-  ){
-
-    car.speed = 0;
-
-  }
-
-  car.speed =
-    Math.max(
-      -35,
-      Math.min(
-        220,
-        car.speed
-      )
-    );
-
-  /*
-    RPM.
-  */
-
-  if(
-    car.gear === "P" ||
-    car.gear === "N"
-  ){
-
-    car.rpm = 800;
-
-  }else{
-
-    car.rpm =
-      800 +
-      car.throttle * 4000 +
-      Math.abs(car.speed) * 14;
-
-  }
-
-  car.rpm =
-    Math.min(
-      7000,
-      car.rpm
-    );
-
-  /*
-    Steering return.
-  */
-
-  if(
-    steeringPointer === null
-  ){
-
-    car.steering *=
-      Math.pow(
-        .035,
-        dt
-      );
-
-  }
-
-  /*
-    Steering angle.
-  */
-
-  const movement =
-    Math.min(
-      1,
-      Math.abs(car.speed) / 12
-    );
-
-  const direction =
-    car.gear === "R"
-      ? -1
-      : 1;
-
-  car.steeringAngle +=
-    car.steering *
-    movement *
-    55 *
-    dt *
-    direction;
-
-  /*
-    Temperature.
-  */
-
-  car.temp +=
-    (
-      88 +
-      car.throttle * 10 -
-      car.temp
-    ) *
-    dt *
-    .8;
-
-  /*
-    Fuel.
-  */
-
-  car.fuel -=
-    car.throttle *
-    dt *
-    .002;
-
-  car.fuel =
-    Math.max(
-      0,
-      car.fuel
-    );
-
-  /*
-    Damage begins to rise
-    during extreme manoeuvres.
-  */
-
-  if(
-    Math.abs(car.steering) > .92 &&
-    Math.abs(car.speed) > 105
-  ){
-
-    car.damage +=
-      dt * .015;
-
-  }
-
-  car.damage =
-    Math.min(
-      100,
-      car.damage
-    );
-
-}
-
-/* =====================================================
-   ROAD MOTION
-===================================================== */
-
-let roadMotion = 0;
-
-function updateRoad(dt){
-
-  roadMotion +=
-    Math.abs(car.speed) *
-    dt *
-    1.5;
-
-  document
-  .querySelectorAll(".roadMark")
-  .forEach(
-    (mark,index) => {
-
-      const y =
-        (
-          index * 95 +
-          roadMotion * 3
-        ) % 480;
-
-      mark.style.top =
-        y + "px";
-
-      const scale =
-        .25 +
-        y / 500;
-
-      mark.style.transform =
-        `translateX(-50%) scale(${scale})`;
-
-    }
-  );
-
-}
-
-/* =====================================================
-   DASHBOARD
-===================================================== */
-
-function updateDashboard(){
-
-  $("speed")
-    .textContent =
-    Math.round(
-      Math.abs(car.speed)
-    );
-
-  $("rpm")
-    .textContent =
-    Math.round(
-      car.rpm
-    );
-
-  $("temp")
-    .textContent =
-    Math.round(
-      car.temp
-    );
-
-  $("bottomTemp")
-    .textContent =
-    Math.round(
-      car.temp
-    );
-
-  $("fuel")
-    .textContent =
-    Math.round(
-      car.fuel
-    );
-
-  $("bottomFuel")
-    .textContent =
-    Math.round(
-      car.fuel
-    );
-
-  $("condition")
-    .textContent =
-    "CONDITION " +
-    Math.round(
-      100 - car.damage
-    ) +
-    "%";
-
-  $("brakeFill")
-    .style.height =
-    (
-      car.brake * 100
-    ) + "%";
-
-  $("accelFill")
-    .style.height =
-    (
-      car.throttle * 100
-    ) + "%";
-
-  $("brakeValue")
-    .textContent =
-    Math.round(
-      car.brake * 100
-    ) + "%";
-
-  $("accelValue")
-    .textContent =
-    Math.round(
-      car.throttle * 100
-    ) + "%";
-
-  /*
-    Steering wheel visual rotation.
-  */
-
-  steeringWheel.style.transform =
-    `rotate(${car.steering * 115}deg)`;
-
-  /*
-    Status.
-  */
-
-  if(car.gear === "D"){
-
-    $("driveStatus")
-      .textContent =
-      "DRIVE";
-
-  }else if(car.gear === "R"){
-
-    $("driveStatus")
-      .textContent =
-      "REVERSE";
-
-  }else if(car.gear === "N"){
-
-    $("driveStatus")
-      .textContent =
-      "NEUTRAL";
-
-  }else{
-
-    $("driveStatus")
-      .textContent =
-      "PARK";
-
-  }
-
-}
-
-/* =====================================================
-   MIRROR
-===================================================== */
-
-function updateMirror(){
-
-  if(
-    car.gear === "R"
-  ){
-
-    $("mirrorLabel")
-      .textContent =
-      "REVERSE CAMERA";
-
-    $("rearVehicle")
-      .style.opacity =
-      ".25";
-
-  }else{
-
-    $("mirrorLabel")
-      .textContent =
-      "REAR VIEW";
-
-    $("rearVehicle")
-      .style.opacity =
-      ".8";
-
-  }
-
-}
-
-/* =====================================================
-   SETTINGS
-===================================================== */
-
-$("settingsButton")
-.addEventListener(
-  "click",
-  () => {
-
-    $("settings")
-      .classList.add("open");
-
-  }
-);
-
-$("closeSettings")
-.addEventListener(
-  "click",
-  () => {
-
-    $("settings")
-      .classList.remove("open");
-
-  }
-);
-
-document
-.querySelectorAll(
-  "[data-setting]"
-)
-.forEach(button => {
-
-  button.addEventListener(
-    "click",
-    () => {
-
-      const setting =
-        button.dataset.setting;
-
-      car[setting] =
-        !car[setting];
-
-      button.textContent =
-        car[setting]
-          ? "ON"
-          : "OFF";
-
-      if(
-        setting === "night"
-      ){
-
-        document.body
-          .classList.toggle(
-            "night",
-            car.night
-          );
-
-      }
-
-    }
-  );
-
+    gearEl.textContent=gear;
+    message("GEAR • "+gear);
+  });
 });
 
-/* =====================================================
-   EXIT
-===================================================== */
+/* ---------------- PEDAL SLIDERS ---------------- */
 
-$("exit")
-.addEventListener(
-  "click",
-  () => {
+function pedalControl(el,type){
 
-    car.throttle = 0;
-    car.brake = .8;
-    car.gear = "P";
+  const fill=el.querySelector(".pedalFill");
+  let active=false;
 
-    document
-    .querySelectorAll(".gearButton")
-    .forEach(button =>
-      button.classList.toggle(
-        "active",
-        button.dataset.gear === "P"
-      )
-    );
+  function update(e){
+    const r=el.getBoundingClientRect();
+    let value=1-(e.clientY-r.top)/r.height;
+    value=Math.max(0,Math.min(1,value));
 
-    $("gearDisplayValue")
-      .textContent = "P";
+    if(type==="accel") accel=value;
+    else brake=value;
 
-    showMessage(
-      "VEHICLE PARKED"
-    );
-
-    setTimeout(
-      () => car.brake = 0,
-      500
-    );
-
+    fill.style.height=(value*100)+"%";
   }
-);
 
-/* =====================================================
-   MIRROR BUTTON
-===================================================== */
+  el.addEventListener("pointerdown",e=>{
+    e.preventDefault();
+    active=true;
+    el.setPointerCapture(e.pointerId);
+    update(e);
+  });
 
-$("mirrorButton")
-.addEventListener(
-  "click",
-  () => {
+  el.addEventListener("pointermove",e=>{
+    if(active) update(e);
+  });
 
-    showMessage(
-      "REAR VIEW ACTIVE"
-    );
+  el.addEventListener("pointerup",()=>{
+    active=false;
+    if(type==="accel") accel=0;
+    else brake=0;
+    fill.style.height="0%";
+  });
 
-    $("mirror")
-      .style.boxShadow =
-      "0 0 28px rgba(100,220,255,.55)";
-
-    setTimeout(
-      () => {
-
-        $("mirror")
-          .style.boxShadow =
-          "0 7px 22px rgba(0,0,0,.45)";
-
-      },
-      800
-    );
-
-  }
-);
-
-/* =====================================================
-   MAP BUTTON
-===================================================== */
-
-$("mapButton")
-.addEventListener(
-  "click",
-  () => {
-
-    showMessage(
-      "MAP MODE COMING SOON"
-    );
-
-  }
-);
-
-/* =====================================================
-   KEYBOARD SUPPORT
-===================================================== */
-
-window.addEventListener(
-  "keydown",
-  event => {
-
-    const key =
-      event.key.toLowerCase();
-
-    if(key === "w")
-      car.throttle = 1;
-
-    if(key === "s")
-      car.brake = 1;
-
-    if(key === "a")
-      car.steering = -1;
-
-    if(key === "d")
-      car.steering = 1;
-
-    if(
-      key === "r" &&
-      Math.abs(car.speed) < 3
-    ){
-
-      car.gear = "R";
-
-    }
-
-    if(
-      key === "n" &&
-      Math.abs(car.speed) < 3
-    ){
-
-      car.gear = "N";
-
-    }
-
-    if(
-      key === "p" &&
-      Math.abs(car.speed) < 3
-    ){
-
-      car.gear = "P";
-
-    }
-
-    if(
-      key === "f" &&
-      Math.abs(car.speed) < 3
-    ){
-
-      car.gear = "D";
-
-    }
-
-  }
-);
-
-window.addEventListener(
-  "keyup",
-  event => {
-
-    const key =
-      event.key.toLowerCase();
-
-    if(key === "w")
-      car.throttle = 0;
-
-    if(key === "s")
-      car.brake = 0;
-
-    if(
-      key === "a" ||
-      key === "d"
-    ){
-
-      car.steering = 0;
-
-    }
-
-  }
-);
-
-/* =====================================================
-   ROAD MARKS
-===================================================== */
-
-for(
-  let i = 0;
-  i < 7;
-  i++
-){
-
-  const mark =
-    document.createElement("div");
-
-  mark.className =
-    "roadMark";
-
-  mark.style.top =
-    (
-      i * 95
-    ) + "px";
-
-  $("centreLine")
-    .appendChild(mark);
-
+  el.addEventListener("pointercancel",()=>{
+    active=false;
+    if(type==="accel") accel=0;
+    else brake=0;
+    fill.style.height="0%";
+  });
 }
 
-/* =====================================================
-   GAME LOOP
-===================================================== */
+pedalControl(document.getElementById("accel"),"accel");
+pedalControl(document.getElementById("brake"),"brake");
 
-let previous =
-  performance.now();
+/* ---------------- STEERING ---------------- */
 
-function gameLoop(time){
+let steeringActive=false;
+let steerStartX=0;
+let steerStartValue=0;
 
-  const dt =
-    Math.min(
-      .05,
-      (time - previous) / 1000
-    );
+steerEl.addEventListener("pointerdown",e=>{
+  e.preventDefault();
+  steeringActive=true;
+  steerStartX=e.clientX;
+  steerStartValue=steering;
+  steerEl.setPointerCapture(e.pointerId);
+});
 
-  previous =
-    time;
+steerEl.addEventListener("pointermove",e=>{
+  if(!steeringActive)return;
 
-  physics(dt);
-  updateRoad(dt);
-  updateDashboard();
-  updateMirror();
+  const delta=(e.clientX-steerStartX)/100;
+  steering=Math.max(-1,Math.min(1,steerStartValue+delta));
 
-  requestAnimationFrame(
-    gameLoop
-  );
+  const rotation=steering*70;
+  steerEl.style.transform="rotate("+rotation+"deg)";
+});
 
+steerEl.addEventListener("pointerup",()=>{
+  steeringActive=false;
+  steering*=0.35;
+});
+
+steerEl.addEventListener("pointercancel",()=>{
+  steeringActive=false;
+  steering=0;
+});
+
+/* ---------------- LIGHTS / INDICATORS ---------------- */
+
+function toggleButton(id,label){
+  document.getElementById(id).addEventListener("pointerdown",e=>{
+    e.preventDefault();
+    e.currentTarget.classList.toggle("on");
+    message(label);
+  });
 }
 
-requestAnimationFrame(
-  gameLoop
-);
+toggleButton("lights","LIGHTS");
+toggleButton("hazard","HAZARD");
+toggleButton("wipers","WIPERS");
 
-/* =====================================================
-   START
-===================================================== */
+document.getElementById("left").addEventListener("pointerdown",()=>{
+  document.getElementById("left").classList.toggle("on");
+  document.getElementById("right").classList.remove("on");
+  message("LEFT INDICATOR");
+});
 
-setTimeout(
-  () => {
+document.getElementById("right").addEventListener("pointerdown",()=>{
+  document.getElementById("right").classList.toggle("on");
+  document.getElementById("left").classList.remove("on");
+  message("RIGHT INDICATOR");
+});
 
-    showMessage(
-      "WAYFLO • COCKPIT READY"
-    );
+document.getElementById("map").addEventListener("pointerdown",()=>{
+  message("MAP SYSTEM — COMING SOON");
+});
 
-  },
-  700
-);
+document.getElementById("settingsBtn").addEventListener("pointerdown",()=>{
+  message("SETTINGS — COMING SOON");
+});
 
+document.getElementById("mirrorBtn").addEventListener("pointerdown",()=>{
+  mirrorEl.style.display=
+    mirrorEl.style.display==="none" ? "block" : "none";
+});
+
+document.getElementById("exit").addEventListener("pointerdown",()=>{
+  message("EXIT VEHICLE — COMING SOON");
+});
+
+/* ---------------- DRIVING PHYSICS ---------------- */
+
+let last=performance.now();
+
+function loop(now){
+
+  const dt=Math.min(.05,(now-last)/1000);
+  last=now;
+
+  let targetAccel=0;
+
+  if(gear==="D") targetAccel=accel;
+  if(gear==="R") targetAccel=-accel;
+
+  if(gear==="P" || gear==="N"){
+    targetAccel=0;
+  }
+
+  /* acceleration */
+  speed += targetAccel*28*dt;
+
+  /* natural rolling resistance */
+  if(accel===0){
+    speed *= Math.pow(.992,dt*60);
+  }
+
+  /* braking */
+  speed -= brake*55*dt;
+
+  /* prevent impossible values */
+  if(gear==="D") speed=Math.max(0,speed);
+  if(gear==="R") speed=Math.min(0,speed);
+
+  speed=Math.max(-18,Math.min(180,speed));
+
+  /* engine RPM */
+  const absSpeed=Math.abs(speed);
+
+  if(gear==="P" || gear==="N"){
+    rpm=800+accel*2500;
+  }else{
+    rpm=800+absSpeed*55+accel*2300;
+  }
+
+  rpm=Math.max(700,Math.min(6500,rpm));
+
+  /* steering visual movement */
+  if(!steeringActive){
+    steering*=Math.pow(.90,dt*60);
+    steerEl.style.transform="rotate("+(steering*70)+"deg)";
+  }
+
+  /* road animation */
+  const lanes=document.querySelectorAll(".lane");
+  const roadMotion=Math.abs(speed)*1.8;
+
+  lanes.forEach((lane,i)=>{
+    let y=parseFloat(lane.dataset.y||[6,28,51,75][i]);
+    y+=roadMotion*dt;
+
+    if(y>100)y=-12;
+
+    lane.dataset.y=y;
+    lane.style.top=y+"%";
+  });
+
+  /* mirror car */
+  const mirrorCar=document.getElementById("mirrorCar");
+  mirrorCar.style.transform=
+    "translateX("+(-steering*20)+"px)";
+
+  /* dashboard */
+  speedEl.textContent=Math.round(Math.abs(speed));
+  rpmEl.textContent=Math.round(rpm);
+  gearEl.textContent=gear;
+  fuelEl.textContent=Math.round(fuel);
+
+  if(accel>0 && Math.abs(speed)>0){
+    fuel-=accel*.002*dt*60;
+  }
+
+  fuel=Math.max(0,fuel);
+
+  if(temp<105 && accel>.7){
+    temp+=.015*dt*60;
+  }else if(temp>88){
+    temp-=.005*dt*60;
+  }
+
+  tempEl.textContent=Math.round(temp);
+
+  distance+=Math.abs(speed)*dt/3600;
+
+  requestAnimationFrame(loop);
+}
+
+requestAnimationFrame(loop);
+
+message("WAYFLO • COCKPIT READY");
 </script>
-
 </body>
 </html>
